@@ -45,16 +45,6 @@ public class BattleShipClient2 extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        //draw grid
-        pane.setMinHeight(600);
-        for (int i = 50; i <= 500; i+=50) {
-            gcP.strokeLine(i,0,i,500);
-            gcP.strokeLine(0,i,500,i);
-        }
-        for (int i = 50; i <= 500; i+=50) {
-            gcO.strokeLine(i,0,i,500);
-            gcO.strokeLine(0,i,500,i);
-        }
 
         //set stage
         pane.add(playerCanvas,0,0,1,1);
@@ -69,6 +59,23 @@ public class BattleShipClient2 extends Application {
         //set boards
         AIboard();
         playerBoard();
+
+        //draw grid
+        pane.setMinHeight(600);
+        for (int i = 50; i <= 500; i+=50) {
+            gcP.strokeLine(i,0,i,500);
+            gcP.strokeLine(0,i,500,i);
+
+            gcP.strokeText(String.valueOf(i/50),i,15);
+            gcP.strokeText(String.valueOf(i/50 - 1),3,i);
+
+            gcO.strokeLine(i,0,i,500);
+            gcO.strokeLine(0,i,500,i);
+
+            gcO.strokeText(String.valueOf(i/50),i,15);
+            gcO.strokeText(String.valueOf(i/50 - 1),3,i);
+        }
+
 
         //play game
         boolean playerTurn = false;
@@ -91,10 +98,10 @@ public class BattleShipClient2 extends Application {
                     if (coordinates.length() == 2) {
                         int[] coordinate = convertToInt(coordinates);
                         if (isHit(coordinate, opponentBoard)) {
-                            ta.setText("You have hit opponent! \n");
+                            ta.appendText("You have hit opponent! \n");
                             gcO.setFill(Color.RED);
                         } else {
-                            ta.setText("You have missed. \n");
+                            ta.appendText("You have missed. \n");
                             gcO.setFill(Color.BLACK);
                         }
                         gcO.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10,10);
@@ -125,10 +132,10 @@ public class BattleShipClient2 extends Application {
                 coordinate[1] = r.nextInt(10);
 
                 if (isHit(coordinate, playerBoard)) {
-                    ta.setText("You have been HIT! \n");
+                    ta.appendText("You have been HIT! \n");
                     gcP.setFill(Color.RED);
                 } else {
-                    ta.setText("Opponent has missed. \n");
+                    ta.appendText("Opponent has missed. \n");
                     gcP.setFill(Color.BLACK);
                 }
                 gcP.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10,10);
