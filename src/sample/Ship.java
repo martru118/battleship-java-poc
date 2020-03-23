@@ -1,3 +1,5 @@
+package sample;
+
 public class Ship {
     private int spaces;
     private String name;
