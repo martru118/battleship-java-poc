@@ -25,12 +25,12 @@ import javafx.stage.Stage;
 
 public class BattleShipGame extends Application {
 
-    final int boardSize = 10; // the game board will have this number of rows and columns
+    final int BOARD_SIZE = 10; // the game board will have this number of rows and columns
     StackPane stackPane;
     GridPane playerBoard; // will contain grid of buttons(cells)
     GridPane opponentBoard;
-    Button[] playerGridButtons = new Button[boardSize * boardSize];
-    Button[] opponentGridButtons = new Button[boardSize * boardSize];
+    Button[] playerGridButtons = new Button[BOARD_SIZE * BOARD_SIZE];
+    Button[] opponentGridButtons = new Button[BOARD_SIZE * BOARD_SIZE];
     GameBoard playerGameBoard;
     GameBoard opponentGameBoard;
     boolean turn = true; // true = player's turn
@@ -59,7 +59,7 @@ public class BattleShipGame extends Application {
         opponentBoard = new GridPane();
 
         HBox labelHBox = new HBox();
-        labelHBox.setSpacing( 300.0 ); // place labels above corresponding game boards
+        labelHBox.setSpacing( 400.0 ); // place labels above corresponding game boards
         Label playerBoardLabel = new Label("PLAYER");
         Label opponentBoardLabel = new Label("OPPONENT");
         labelHBox.getChildren().addAll(playerBoardLabel, opponentBoardLabel);
@@ -77,8 +77,8 @@ public class BattleShipGame extends Application {
         createButtons( playerGridButtons, true );
         createButtons( opponentGridButtons, false );
 
-        playerGameBoard = new GameBoard(boardSize, playerGridButtons);
-        opponentGameBoard = new GameBoard(boardSize, opponentGridButtons);
+        playerGameBoard = new GameBoard(BOARD_SIZE, playerGridButtons);
+        opponentGameBoard = new GameBoard(BOARD_SIZE, opponentGridButtons);
         // style grid cells
         playerGameBoard.initializeCells( playerGridButtons );
         opponentGameBoard.initializeCells( opponentGridButtons );
@@ -99,12 +99,12 @@ public class BattleShipGame extends Application {
     }
 
     void createButtons( Button[] cellButtons, boolean player ) {
-        int buttonSize = 30;
-        for (int i = 0; i < boardSize * boardSize; i++) {
+        final int BUTTON_SIZE = 40;
+        for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             cellButtons[i] = new Button();
             cellButtons[i].setId(String.valueOf(i)); // this will be used as this cell's index
-            cellButtons[i].setPrefSize(buttonSize,buttonSize);
-            cellButtons[i].setMinSize(buttonSize,buttonSize);
+            cellButtons[i].setPrefSize(BUTTON_SIZE,BUTTON_SIZE);
+            cellButtons[i].setMinSize(BUTTON_SIZE,BUTTON_SIZE);
             cellButtons[i].setPadding(new Insets(0.5,0.5,0.5,0.5));
             cellButtons[i].setOnAction(actionEvent -> {
                 if( !player ) { // player can't attack his own board
@@ -125,12 +125,13 @@ public class BattleShipGame extends Application {
 
     }
 
+    // adds buttons on the game board pane to form the grid
     void placeButtons( Button[] cellButtons, GridPane gameBoard) {
         int x;
         int y;
         for (int i = 0; i < 100; i++) {
-            x = i % boardSize;
-            y = i / boardSize;
+            x = i % BOARD_SIZE;
+            y = i / BOARD_SIZE;
             gameBoard.add(cellButtons[i], x, y);
         }
     }
