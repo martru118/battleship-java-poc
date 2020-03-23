@@ -39,6 +39,9 @@ public class GameBoard {
             cell.getButton().setText("X");
         }
         cell.setHit();
+
+        // test only remove later changes color of the button
+        cell.setColor("salmon");
         return true;
     }
 }
