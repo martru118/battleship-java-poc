@@ -159,6 +159,7 @@ public class BattleShipClient2 extends Application {
             e.printStackTrace();
         }   */
 
+        // user enters a coordinates to fire
         tf.setOnAction(e -> {
             int[] coordinate = convertToInt(tf.getText());
 
