@@ -7,7 +7,7 @@ import sample.Ship;
 public class GameBoard {
 
     // Fields
-    final int boardSize; // the game board will have this number of rows and columns
+    final int boardSize; // the game board will have this many number of rows and columns
     GridCell[] gridCells;
 
     // Constructor
@@ -24,19 +24,19 @@ public class GameBoard {
         for (int i = 0; i < boardSize * boardSize; i++) {
             gridCells[i] = new GridCell( -1, cells[i]);
         }
-    };
+    }
 
     // this cell has been fired at
     // update accordingly
     void updateCell(Button cellBtn) {
-        GridCell cell = gridCells[Integer.parseInt(cellBtn.getId())];
+        GridCell cell = gridCells[Integer.parseInt(cellBtn.getId())]; // fetch GridCell instance connected to this button
+
+        if ( cell.isHit() ) { return; } // return if this cell's already been hit
+
+        // TODO dertermine if the cell is occupied and update cell accordingly
         if ( cell.getOwner() == -1 ) {
             cell.getButton().setText("X");
         }
     }
-
-
-
-
 }
 

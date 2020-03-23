@@ -8,7 +8,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+// TODO set up game GUI : player and opponent boards, log box,
+//  implement hit/miss mechanism
+
 public class BattleShipGame extends Application {
+
     final int boardSize = 10; // the game board will have this number of rows and columns
     StackPane stackPane;
     GridPane playerBoard;
@@ -54,14 +58,17 @@ public class BattleShipGame extends Application {
             playerGridButtons[i].setMinSize(buttonSize,buttonSize);
             playerGridButtons[i].setPadding(new Insets(0.5,0.5,0.5,0.5));
             playerGridButtons[i].setOnAction(actionEvent -> {
-                updateCell( (Button)actionEvent.getSource() );
+                if( turn ) { // only if it's player's turn
+                    updateCell( (Button)actionEvent.getSource() );
+                }
+
             });
         }
     }
 
     void placeButtons() {
-        int x = 0;
-        int y = 0;
+        int x;
+        int y;
         for (int i = 0; i < 100; i++) {
             x = i % boardSize;
             y = i / boardSize;
@@ -72,6 +79,10 @@ public class BattleShipGame extends Application {
     // shot fired at a cell, update the cell
     void updateCell(Button cell) {
         gameBoard.updateCell( cell );
+    }
+
+    void changeTurn() {
+        turn = !turn;
     }
 
 }
