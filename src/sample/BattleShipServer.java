@@ -19,20 +19,24 @@ import java.net.Socket;
 import java.util.Date;
 
 public class BattleShipServer extends Application {
-    boolean[][] board = new boolean[10][10];
-    DataOutputStream toServer = null;
-    DataInputStream fromServer = null;
-
+    private boolean[][] board = new boolean[10][10];
+    private DataOutputStream toServer = null;
+    private DataInputStream fromServer = null;
+    private TextArea ta = new TextArea();
+    private TextField tf = new TextField();
 
     @Override
     public void start(Stage stage) throws Exception {
         GridPane pane = new GridPane();
         pane.setMinHeight(600);
 
+        //create board
         Canvas playerCanvas = new Canvas(500,500);
         Canvas opponentCanvas = new Canvas(500,500);
         GraphicsContext gcP = playerCanvas.getGraphicsContext2D();
         GraphicsContext gcO = opponentCanvas.getGraphicsContext2D();
+
+        //fill boards
         for (int i = 50; i <= 500; i+=50) {
             gcP.strokeLine(i,0,i,500);
             gcP.strokeLine(0,i,500,i);
@@ -41,9 +45,6 @@ public class BattleShipServer extends Application {
             gcO.strokeLine(i,0,i,500);
             gcO.strokeLine(0,i,500,i);
         }
-
-        TextArea ta = new TextArea();
-        TextField tf = new TextField();
 
         pane.add(playerCanvas,0,0,1,1);
         pane.add(opponentCanvas,1,0,1,1);
@@ -62,10 +63,10 @@ public class BattleShipServer extends Application {
 
             for (int i = 0; i < ships.length; i++) {
                 ta.appendText("Welcome to Battle ship \n" +
-                        "Please place your " + ships[i].name +" ("+ships[i].spaces+ " spaces) \n" );
+                        "Please place your " + ships[i].getName() + " (" + ships[i].getSpaces() + " spaces) \n" );
 
-                for(int j = 0; j < ships[i].spaces; j++) {
-                    ta.appendText("Please type in coordinate #" + j+" out of "+ships[i].spaces+".\n");
+                for(int j = 0; j < ships[i].getSpaces(); j++) {
+                    ta.appendText("Please type in coordinate #" + j + " out of " + ships[i].getSpaces() + ".\n");
 
                     tf.setOnAction(e -> {
                         int coordinates[] = new int[2];
@@ -75,21 +76,19 @@ public class BattleShipServer extends Application {
                         while (board[coordinates[0]][coordinates[1]]) {
                             ta.appendText("Spot taken, try again");
                         }
+
                         board[coordinates[0]][coordinates[1]] = true;
                         gcP.setFill(Color.AQUA);
                         gcP.fillRect(coordinates[0]*50 + 2,coordinates[1]*50 + 2, 45,45);
                     });
                 }
             }
-
         });
 
         Thread opponentTurn = new Thread(() -> {
             try {
                 ServerSocket serverSocket = new ServerSocket(8000);
-                //server started time + date
                 Platform.runLater(() -> ta.appendText("Server started at " +  new Date() + '\n'));
-                //socket is your clients socket
                 Socket socket = serverSocket.accept();
 
                 DataInputStream fromClient = new DataInputStream(socket.getInputStream());
@@ -98,9 +97,7 @@ public class BattleShipServer extends Application {
                 while(true) {
                     String coordinateReceived = fromClient.readUTF();
 
-                    //make string to int array
-                    int [] coordinate = new int[2];
-
+                    int [] coordinate = new int[2]; //comvert string to int array
                     coordinate[0] = Character.getNumericValue(coordinateReceived.charAt(0));
                     coordinate[1] = Character.getNumericValue(coordinateReceived.charAt(1));
 
@@ -125,28 +122,9 @@ public class BattleShipServer extends Application {
 
         startingThread.start();
         opponentTurn.start();
-
-
-
     }
+
     public boolean isHit(int[] coordinates, boolean[][] board) {
-        if (board[coordinates[0]][coordinates[1]]) {
-            return true;
-        }
-        return false;
-    }
-    public void welcome (TextArea ta, TextField tf) {
-
-    }
-
-    private class Ship {
-        int spaces;
-        String name;
-        Ship(int spaces, String name){
-            this.spaces = spaces;
-            this.name = name;
-        }
-
-
+        return board[coordinates[0]][coordinates[1]];
     }
 }
