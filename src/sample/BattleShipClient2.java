@@ -6,10 +6,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -79,19 +76,22 @@ public class BattleShipClient2 extends Application {
         boolean playerTurn = false;
         while(true) {
             if (playerTurn) {
-
                 TextInputDialog tid = new TextInputDialog();
+                tid.setHeaderText("Enter a coordinate");
+                tid.getEditor().setText("01");
                 Optional<String> c = tid.showAndWait();
                 c.ifPresent(coordinates -> {
-                    int[] coordinate = convertToInt(coordinates);
-                    if (isHit(coordinate, opponentBoard)) {
-                        ta.setText("You have hit opponent! \n");
-                        gcO.setFill(Color.RED);
-                    } else {
-                        ta.setText("You have missed. \n");
-                        gcO.setFill(Color.BLACK);
+                    if (coordinates.length() == 2) {
+                        int[] coordinate = convertToInt(coordinates);
+                        if (isHit(coordinate, opponentBoard)) {
+                            ta.setText("You have hit opponent! \n");
+                            gcO.setFill(Color.RED);
+                        } else {
+                            ta.setText("You have missed. \n");
+                            gcO.setFill(Color.BLACK);
+                        }
+                        gcO.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10,10);
                     }
-                    gcO.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10,10);
                 });
 
 //                tf.setOnAction(e -> {
