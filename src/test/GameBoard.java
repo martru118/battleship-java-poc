@@ -1,18 +1,16 @@
 package test;
 
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import sample.Ship;
 
 public class GameBoard {
 
     // Fields
-    final int boardSize; // the game board will have this many number of rows and columns
+    final int BOARD_SIZE; // the game board will have this many number of rows and columns
     GridCell[] gridCells;
 
     // Constructor
     public GameBoard(int boardSize, Button[] buttons) {
-        this.boardSize = boardSize;
+        this.BOARD_SIZE = boardSize;
         this.gridCells = new GridCell[boardSize * boardSize];
         initializeCells(buttons);
     }
@@ -21,7 +19,7 @@ public class GameBoard {
     // Methods
 
     void initializeCells(Button[] cells) {
-        for (int i = 0; i < boardSize * boardSize; i++) {
+        for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             gridCells[i] = new GridCell( -1, cells[i]);
         }
     }
