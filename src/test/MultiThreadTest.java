@@ -15,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.Timer;
@@ -58,7 +59,7 @@ public class MultiThreadTest extends Application {
         // add event handling for textField
         textField.setOnAction(actionEvent -> {
             String currentText = textArea.getText();
-            String newText = textField.getText();
+            String newText = myTimer.getTime() + " : " +textField.getText();
             textArea.setText(currentText + '\n' + newText);
             textArea.setScrollTop(Double.MAX_VALUE);
             textField.clear();
@@ -103,8 +104,16 @@ public class MultiThreadTest extends Application {
 
         }
 
-        public int getMinute() { return this.time / 60; }
-        public int getSecond() { return this.time % 60; }
+        public String getTime() { return getMinute() + ":" + getSecond(); }
+        public String getMinute() { return String.valueOf( this.time / 60 ); }
+        public String getSecond() {
+            int second = this.time % 60;
+            if ( second < 10) {
+                return "0" + second;
+            } else {
+                return String.valueOf(second);
+            }
+        }
     }
 
 
