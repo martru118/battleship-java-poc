@@ -1,3 +1,5 @@
+package sample;
+
 import com.sun.jdi.event.MonitorWaitedEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
