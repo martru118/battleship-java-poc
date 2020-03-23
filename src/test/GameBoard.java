@@ -28,15 +28,18 @@ public class GameBoard {
 
     // this cell has been fired at
     // update accordingly
-    void updateCell(Button cellBtn) {
+    // returns true if it's a valid move, false otherwise
+    boolean updateCell(Button cellBtn) {
         GridCell cell = gridCells[Integer.parseInt(cellBtn.getId())]; // fetch GridCell instance connected to this button
 
-        if ( cell.isHit() ) { return; } // return if this cell's already been hit
+        if ( cell.isHit() ) { return false; } // return if this cell's already been hit
 
         // TODO dertermine if the cell is occupied and update cell accordingly
         if ( cell.getOwner() == -1 ) {
             cell.getButton().setText("X");
         }
+        cell.setHit();
+        return true;
     }
 }
 

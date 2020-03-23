@@ -51,13 +51,17 @@ public class GridCell {
     public Button getButton() { return this.btn; } // returns pointer to the button element on the game board
 
 
-    void setOwner(int owner) {
+    public void setOwner(int owner) {
         // -1 = unoccupied, 0 = player, 1 = opponent
         this.owner = owner;
     }
 
     void updateColor() {
 
+    }
+
+    public void setHit() {
+        this.hit = true;
     }
 
 
