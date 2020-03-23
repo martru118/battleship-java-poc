@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 //  opponent AI
 //  implement hit/miss mechanism
 //  multi-threading
+//  game end
 
 /**
  * Flow of game
@@ -116,7 +117,7 @@ public class BattleShipGame extends Application {
 
     private void makeMove(Button source) {
 
-        if( opponentGameBoard.updateCell( source ) ){
+        if( opponentGameBoard.updateCell( source ) ){ // ? valid move
             changeTurn();
             playerGameBoard.updateCell( playerGridButtons[makeRandomMove()] );
             changeTurn();
@@ -151,8 +152,6 @@ public class BattleShipGame extends Application {
 
     void changeTurn() {
         turn = !turn;
-
-
     }
 
     void startGame() {

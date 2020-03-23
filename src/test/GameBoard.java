@@ -34,14 +34,18 @@ public class GameBoard {
 
         if ( cell.isHit() ) { return false; } // return if this cell's already been hit
 
-        // TODO dertermine if the cell is occupied and update cell accordingly
-        if ( cell.getOwner() == -1 ) {
-            cell.getButton().setText("X");
+        // TODO determine if the cell is occupied and update cell status
+        //  should change color differently depending on ownership of the cell
+        cell.getButton().setText("X");
+        if ( cell.getOwner() == -1 ) { // empty cell
+            cell.setColor("aqua");
+        } else if ( cell.getOwner() == 0) {
+            cell.setColor("salmon");
+        } else {
+            cell.setColor("coral");
         }
         cell.setHit();
 
-        // test only remove later changes color of the button
-        cell.setColor("salmon");
         return true;
     }
 }

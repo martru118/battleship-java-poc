@@ -64,7 +64,7 @@ public class GridCell {
         this.hit = true;
     }
 
-
+    // change the button element's background color
     void setColor(String newColor) {
         btn.setStyle("-fx-border-color: darkgrey; -fx-background-color: " + newColor);
     }
