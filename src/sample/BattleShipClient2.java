@@ -6,10 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -102,8 +99,15 @@ public class BattleShipClient2 extends Application {
                 while (true) {
                     //player turn
                     if (getPlayerturn()) {
-                        TextInputDialog tid = new TextInputDialog("Starting the Game");
-                        tid.setHeaderText("Enter the Column Number and then the Row number");
+                        TextInputDialog tid = new TextInputDialog("");
+                        tid.setHeaderText("Enter the Column Number and then the Row number (eg. 74)");
+
+                        final Button cancel = (Button) tid.getDialogPane().lookupButton(ButtonType.CANCEL);
+                        cancel.addEventFilter(ActionEvent.ACTION, event ->
+                                tid.showAndWait()
+                        );
+
+
                 /*
                 tid.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
                     if (!newValue.matches("\\d{0,1}([\\,]\\d{0,1})?"))
