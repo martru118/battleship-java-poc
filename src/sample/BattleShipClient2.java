@@ -377,5 +377,29 @@ public class BattleShipClient2 extends Application {
         public void changeTurn () {
             playerTurn = !playerTurn;
         }
+    
+        public void writeScores(String filePath) throws Exception {
+            Score newScore;     //generate new score
 
+            //check who won
+            if (getPlayerturn())
+                newScore = new Score("Player", playerscore);
+            else
+                newScore = new Score("Computer", opponentscore);
+
+            //write to file
+            FileWriter writer = new FileWriter(filePath);
+            try {
+                writer.append(newScore.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
