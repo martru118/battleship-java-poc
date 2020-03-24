@@ -248,13 +248,14 @@ public class BattleShipClient2 extends Application {
         }
         //returns true if ship is able to be placed on board
         public boolean isValid (Ship ship,int[] coordinate, boolean[][] board){
+
+            if(coordinate[0] > 9 || coordinate[1] > 9){
+                return false;
+            }
             //if the space is occupied
-            if (board[coordinate[0]][coordinate[1]])
+            if (board[coordinate[0]][coordinate[1]]){
                 return false;
-            if (coordinate[1] > 9)
-                return false;
-            if (coordinate[0] + ship.getSpaces() > 9)
-                return false;
+            }
 
             return true;
         }
@@ -287,15 +288,19 @@ public class BattleShipClient2 extends Application {
                 c[0][0] = r.nextInt(10); //number from 0-9
                 c[0][1] = r.nextInt(10);
 
-                //place ships
-                if (isValid(ships[i], c[0], opponentBoard)) {
+                //50% chance of ships being placed vertically or horizontally
+                if (r.nextInt() % 2 ==0){
+                    //horizontal placement
                     for (int j = 1; j < c.length; j++) {
-                        c[j][0] = c[j - 1][0] + 1;
-                        c[j][1] = c[j - 1][1];
+                        c[j][0] = c[j-1][0] + 1;
+                        c[j][1] = c[j-1][1];
                     }
                 } else {
-                    i--;
-                    continue;
+                    //vertical placement
+                    for (int j = 1; j < c.length; j++) {
+                        c[j][0] = c[j-1][0];
+                        c[j][1] = c[j-1][1] + 1;
+                    }
                 }
 
                 //check if position is valid
@@ -342,18 +347,22 @@ public class BattleShipClient2 extends Application {
                 c[0][0] = r.nextInt(10); //number from 0-9
                 c[0][1] = r.nextInt(10);
 
-                //place ship
-                if (isValid(ships[i], c[0], playerBoard)) {
+                //50% chance of ships being placed vertically or horizontally
+                if (r.nextInt() % 2 ==0){
+                    //horizontal placement
                     for (int j = 1; j < c.length; j++) {
-                        c[j][0] = c[j - 1][0] + 1;
-                        c[j][1] = c[j - 1][1];
+                        c[j][0] = c[j-1][0] + 1;
+                        c[j][1] = c[j-1][1];
                     }
                 } else {
-                    i--;
-                    continue;
+                    //vertical placement
+                    for (int j = 1; j < c.length; j++) {
+                        c[j][0] = c[j-1][0];
+                        c[j][1] = c[j-1][1] + 1;
+                    }
                 }
 
-                //check if placement is valid
+                //check if position is valid
                 if (isValid(ships[i], c, playerBoard)) {
                     placeShips(ships[i], playerBoard, c);
                     ships[i].setCoordinates(c);
