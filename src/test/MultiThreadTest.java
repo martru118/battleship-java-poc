@@ -5,7 +5,7 @@
  *
  */
 
-package test;
+
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -13,11 +13,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,17 +38,35 @@ public class MultiThreadTest extends Application {
     public void start(Stage stage) throws Exception {
 
         stackPane.getChildren().add(vBox);
-        Scene scene = new Scene(stackPane);
+        Scene scene = new Scene(stackPane,450,300);
 
         // create and add elements to vBox
         TextArea textArea = new TextArea();
         textArea.setText("");
+        BackgroundImage backgroundimage = new BackgroundImage(new Image("ship.jpg",500,100,false,true,true),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        Background background=new Background(backgroundimage);
+        //textArea.setBackground(background);
+        textArea.setStyle("-fx-text-fill:#CC66AA;");
         textArea.setPromptText("Chat");
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
+       textArea.setEditable(false);
+       textArea.setWrapText(true);
+
+
+
         TextField textField = new TextField();
         timerLabel = new Label("0:00");
-
+        timerLabel.setFont(new Font(30));
+        Image image=new Image("clock.jpg");
+        ImageView imageView=new ImageView(image);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+        timerLabel.setGraphic(imageView);
+        textField.setPrefHeight(80);
+        textField.setBackground(background);
         vBox.getChildren().addAll(timerLabel, textArea, textField);
 
         myTimer = new MyTimer();
