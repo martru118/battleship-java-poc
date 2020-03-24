@@ -59,11 +59,13 @@ public class BattleShipClient2 extends Application {
 
         //set stage
         Button startGame = new Button("START THE GAME");
+        Button exitGame = new Button("EXIT THE GAME");
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
         pane.add(tf, 0, 1, 2, 1);
-        pane.add(ta, 0, 2, 2, 1);
+        pane.add(ta, 0, 3, 2, 1);
         pane.add(startGame, 0, 1, 2, 1);
+        pane.add(exitGame, 0, 2, 2, 1);
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
@@ -187,6 +189,13 @@ public class BattleShipClient2 extends Application {
                         break;
                     }
                 }
+            }
+        });
+
+        exitGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.exit(0);
             }
         });
     }
