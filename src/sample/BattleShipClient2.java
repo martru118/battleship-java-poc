@@ -19,6 +19,7 @@ import java.util.Random;
 public class BattleShipClient2 extends Application {
     private TextArea ta = new TextArea();
     private TextField tf = new TextField();
+    private final String path = "src/scores.csv";
 
     //boards
     private boolean[][] playerBoard = new boolean[10][10];
@@ -378,28 +379,48 @@ public class BattleShipClient2 extends Application {
             playerTurn = !playerTurn;
         }
     
-        public void writeScores(String filePath) throws Exception {
-            Score newScore;     //generate new score
+    //https://www.baeldung.com/java-csv-file-array
+    public List<List<String>> getHighScores(String filePath) throws Exception {
+        List<List<String>> records = new ArrayList<>();
 
-            //check who won
-            if (getPlayerturn())
-                newScore = new Score("Player", playerscore);
-            else
-                newScore = new Score("Computer", opponentscore);
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
 
-            //write to file
-            FileWriter writer = new FileWriter(filePath);
+            //read contents of file
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                records.add(Arrays.asList(values));
+            }
+
+            Collections.sort(records.get(1));
+            return records;
+        }
+    }
+
+    //https://examples.javacodegeeks.com/core-java/writeread-csv-files-in-java-example/
+    public void writeScores(String filePath) throws Exception {
+        Score newScore;     //generate new score
+
+        //check who won
+        if (getPlayerturn())
+            newScore = new Score("Player", playerscore);
+        else
+            newScore = new Score("Computer", opponentscore);
+
+        //write to file
+        FileWriter writer = new FileWriter(filePath);
+        try {
+            writer.append(newScore.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            
             try {
-                writer.append(newScore.toString());
-            } catch (Exception e) {
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    writer.flush();
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
+}
