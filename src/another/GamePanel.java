@@ -5,7 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
-// this will serve as the main window of the entire game
+// this will serve as the major panel holding game boards
 public class GamePanel extends GridPane {
 
     // Fields

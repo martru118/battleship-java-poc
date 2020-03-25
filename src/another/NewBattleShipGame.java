@@ -65,26 +65,6 @@ public class NewBattleShipGame extends Application {
 
     }
 
-
-    private void makeMove(Button source) {
-
-    }
-
-    // shot fired at a cell, update the cell
-    void updateCell(Button cell) {
-        if(turnCount) {
-            //opponentGameBoard.updateCell( cell );
-            //playerGameBoard.updateCell( playerGridButtons[makeRandomMove()] );
-        } else {
-            // TODO make AI make a move
-            // for now make a random move on opponent's turn
-            //playerGameBoard.updateCell( playerGridButtons[makeRandomMove()] );
-        }
-
-        changeTurn();
-
-    }
-
     // set mouse click listeners to cpu's GridCells
     // no need to set it on player's cells since cpu won't be clicking cells to make move
     void setListener() {
@@ -138,8 +118,6 @@ public class NewBattleShipGame extends Application {
         alert.setContentText("Start firing at enemy location !");
         alert.setHeaderText("Battle Begins");
         alert.show();
-
-
     }
 
     // player clicks a cell
@@ -164,7 +142,9 @@ public class NewBattleShipGame extends Application {
     }
 
 
-
+    // cpu attacks player
+    // the attacks are purely random for now
+    // TODO make cpu make smarter moves
     private void makeCpuMove() {
         GridCell target = playerCells[makeRandomMove()];
         while ( target.isHit() ) {
@@ -177,7 +157,6 @@ public class NewBattleShipGame extends Application {
     }
 
     private void checkGameOver() {
-        // TODO
         if (turnCount){
             if ( cpu.isDefeated() ) {
                 gamePhase = 2;
@@ -209,10 +188,8 @@ public class NewBattleShipGame extends Application {
             if(!ship.isPlaced()){
                 if(ship.isValidPlacement(cell,playerCells, shipOrientation)){
                     ship.placeShip(cell, playerCells, shipOrientation);
-                    break;
-                } else {
-                    break;
                 }
+                break;
             }
         }
 
@@ -230,7 +207,9 @@ public class NewBattleShipGame extends Application {
 
     }
 
+    // for now the cpu places ships at fixed positions
     void placeCpuShips() {
+        // TODO randomize cpu's ship placement
         NewShip[] cpuShips = new NewShip[5];
         cpuShips = cpu.getShips();
         cpuShips[0].placeShip(cpuCells[0],cpuCells,1);
