@@ -1,4 +1,4 @@
-package sample;
+
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -7,14 +7,16 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.util.Optional;
-import java.util.Random;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class BattleShipClient2 extends Application {
     private TextArea ta = new TextArea();
@@ -27,12 +29,20 @@ public class BattleShipClient2 extends Application {
     //to keep track of the grids which have been discovered
     private boolean[][] disclosedboardPlayer=new boolean[10][10];
     private boolean [][] disclosedboardopponent=new boolean[10][10];
+    //position what have been hit
+    private boolean[][] hitboardPlayer=new boolean[10][10];
+    private boolean [][] hitboardopponent=new boolean[10][10];
+    //position what have been missed
+    private boolean[][] missboardPlayer=new boolean[10][10];
+    private boolean [][] missboardopponent=new boolean[10][10];
     //to take the coordinates from the user and the opponent and initialising it to something invalid.
     int[] coordinate={10,10};
     //to make sure what input length is put by the user.
     int inputlength=0;
     public int playerscore;
     public int opponentscore;
+    //game saving
+    String filename="current game.txt";
     //io streams
     private DataOutputStream toServer = null;
     private DataInputStream fromServer = null;
@@ -98,8 +108,11 @@ public class BattleShipClient2 extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 while (true) {
+                    Image imagewater=new Image("water.jpg");
+                    Image imagefire=new Image("fire.PNG");
                     //player turn
                     if (getPlayerturn()) {
+
                         TextInputDialog tid = new TextInputDialog("");
                         tid.setHeaderText("Enter the Column Number and then the Row number (eg. 74)");
 
@@ -124,23 +137,32 @@ public class BattleShipClient2 extends Application {
                                 inputlength = coordinates.length();
                             });
                         }
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
 
                         if (isHit(coordinate, opponentBoard)) {
 
-                            gcO.setFill(Color.RED);
+                            //gcO.setFill(Color.RED);
+                            gcO.drawImage(imagefire,coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
                             playerscore = playerscore + 25;
                             opponentscore = opponentscore - 25;
+                            hitboardopponent[coordinate[0]][coordinate[1]]=true;
                             ta.appendText("You have Hit opponent.\n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
 
                         } else {
-
+                            missboardopponent[coordinate[0]][coordinate[1]]=true;
                             ta.appendText("You have missed. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
-                            gcO.setFill(Color.BLACK);
+                            //gcO.setFill(Color.BLACK);
+                            gcO.drawImage(imagewater,coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
+
                         }
                         disclosedboardopponent[coordinate[0]][coordinate[1]] = true;
                         //isValidMove()
-                        gcO.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10, 10);
+
 
 
                 /*
@@ -174,12 +196,26 @@ public class BattleShipClient2 extends Application {
                             gcP.setFill(Color.RED);
                             playerscore = playerscore - 25;
                             opponentscore = opponentscore + 25;
+                            hitboardPlayer[coordinate2[0]][coordinate2[1]] = true;
+                            gcP.drawImage(imagefire,coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
                             ta.appendText("You have been HIT! \n " + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             ta.appendText("Opponent has missed. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
                             gcP.setFill(Color.BLACK);
+                            gcP.drawImage(imagewater,coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
+                            missboardPlayer[coordinate2[0]][coordinate2[1]] = true;
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        gcP.fillOval(coordinate2[0] * 50 + 20, coordinate2[1] * 50 + 20, 10, 10);
+                        //gcP.fillOval(coordinate2[0] * 50 + 20, coordinate2[1] * 50 + 20, 10, 10);
                         disclosedboardPlayer[coordinate2[0]][coordinate2[1]] = true;
 
                         changeTurn();
@@ -193,6 +229,7 @@ public class BattleShipClient2 extends Application {
                         ta.appendText("You have lost. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore + "\n");
                         break;
                     }
+
                 }
             }
         });
@@ -200,6 +237,11 @@ public class BattleShipClient2 extends Application {
         exitGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                try {
+                    save();
+                    load();
+                } catch (Exception e) {
+                    e.printStackTrace();}
                 System.exit(0);
             }
         });
@@ -218,167 +260,152 @@ public class BattleShipClient2 extends Application {
             e.printStackTrace();
         }   */
 
-        // user enters a coordinates to fire
-          /*  tf.setOnAction(e -> {
-                int[] coordinate = convertToInt(tf.getText());
-
-                if (isHit(coordinate, opponentBoard)) {
-                    ta.setText("You have hit opponent! \n");
-                    gcO.setFill(Color.RED);
-                    playerscore=playerscore+25;
-                    opponentscore=opponentscore-25;
-                } else {
-                    ta.setText("You have missed. \n");
-                    gcO.setFill(Color.BLACK);
-                }
-
-                gcO.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10, 10);
-                //tf.setText("");
-            });*/
+    // user enters a coordinates to fire
 
 
-        public boolean isValidMove ( int[] coordinate, boolean[][] discloseboard){
-            if (coordinate[1] > 9||coordinate[0]>9){
-                //ta.appendText("Please Type a different coordinate.This coordinate is out of board");
-                return false;}
-             else if(discloseboard[coordinate[0]][coordinate[1]]){
-                //ta.appendText("Please Type a different coordinate.This grid is already discovered");
-                return false;}
 
-            return true;
+    public boolean isValidMove ( int[] coordinate, boolean[][] discloseboard){
+        if (coordinate[1] > 9||coordinate[0]>9){
+            //ta.appendText("Please Type a different coordinate.This coordinate is out of board");
+            return false;}
+        else if(discloseboard[coordinate[0]][coordinate[1]]){
+            //ta.appendText("Please Type a different coordinate.This grid is already discovered");
+            return false;}
+
+        return true;
+    }
+    //returns true if ship is able to be placed on board
+    public boolean isValid (Ship ship,int[] coordinate, boolean[][] board){
+
+        if(coordinate[0] > 9 || coordinate[1] > 9){
+            return false;
         }
-        //returns true if ship is able to be placed on board
-        public boolean isValid (Ship ship,int[] coordinate, boolean[][] board){
-
-            if(coordinate[0] > 9 || coordinate[1] > 9){
-                return false;
-            }
-            //if the space is occupied
-            if (board[coordinate[0]][coordinate[1]]){
-                return false;
-            }
-
-            return true;
-        }
-
-        public boolean isValid (Ship ship,int[][] coordinates, boolean[][] board){
-            for (int[] coord : coordinates) {
-                if (!isValid(ship, coord, board))
-                    return false;
-            }
-            return true;
-        }
-
-        public void placeShips (Ship ship,boolean[][] board, int[][] coordinate){
-            for (int[] coords : coordinate) {
-                board[coords[0]][coords[1]] = true;
-
-                if (board == playerBoard) {
-                    gcP.setFill(Color.AQUA);
-                    gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
-
-                }
-            }
-        }
-
-        public void AIboard () {
-            for (int i = 0; i < ships.length; i++) {
-                Random r = new Random();
-
-                int[][] c = new int[ships[i].getSpaces()][2];
-                c[0][0] = r.nextInt(10); //number from 0-9
-                c[0][1] = r.nextInt(10);
-
-                //50% chance of ships being placed vertically or horizontally
-                if (r.nextInt() % 2 ==0){
-                    //horizontal placement
-                    for (int j = 1; j < c.length; j++) {
-                        c[j][0] = c[j-1][0] + 1;
-                        c[j][1] = c[j-1][1];
-                    }
-                } else {
-                    //vertical placement
-                    for (int j = 1; j < c.length; j++) {
-                        c[j][0] = c[j-1][0];
-                        c[j][1] = c[j-1][1] + 1;
-                    }
-                }
-
-                //check if position is valid
-                if (isValid(ships[i], c, opponentBoard)) {
-                    placeShips(ships[i], opponentBoard, c);
-                    ships[i].setCoordinates(c);
-                } else {
-                    i--;
-                }
-            }
-        }
-
-        public boolean isHit ( int[] coordinate, boolean[][] board){
-            if (board[coordinate[0]][coordinate[1]]) {
-                board[coordinate[0]][coordinate[1]] = false;
-                return true;
-            }
+        //if the space is occupied
+        if (board[coordinate[0]][coordinate[1]]){
             return false;
         }
 
-        public int[] convertToInt (String s){
-            int[] coordinates = new int[2];
-            coordinates[0] = Character.getNumericValue(s.charAt(0));
-            coordinates[1] = Character.getNumericValue(s.charAt(1));
-            return coordinates;
-        }
+        return true;
+    }
 
-        public boolean hasLost ( boolean[][] board){
-            for (boolean[] coords : board) {
-                for (int j = 0; j < board.length; j++) {
-                    if (coords[j])
-                        return false;
+    public boolean isValid (Ship ship,int[][] coordinates, boolean[][] board){
+        for (int[] coord : coordinates) {
+            if (!isValid(ship, coord, board))
+                return false;
+        }
+        return true;
+    }
+
+    public void placeShips (Ship ship,boolean[][] board, int[][] coordinate){
+        for (int[] coords : coordinate) {
+            board[coords[0]][coords[1]] = true;
+            Image imageship=new Image("ship.PNG");
+            if (board == playerBoard) {
+                gcP.setFill(Color.AQUA);
+                //gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
+                gcP.drawImage(imageship,coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
+            }
+        }
+    }
+
+    public void AIboard () {
+        for (int i = 0; i < ships.length; i++) {
+            Random r = new Random();
+
+            int[][] c = new int[ships[i].getSpaces()][2];
+            c[0][0] = r.nextInt(10); //number from 0-9
+            c[0][1] = r.nextInt(10);
+
+            //50% chance of ships being placed vertically or horizontally
+            if (r.nextInt() % 2 ==0){
+                //horizontal placement
+                for (int j = 1; j < c.length; j++) {
+                    c[j][0] = c[j-1][0] + 1;
+                    c[j][1] = c[j-1][1];
+                }
+            } else {
+                //vertical placement
+                for (int j = 1; j < c.length; j++) {
+                    c[j][0] = c[j-1][0];
+                    c[j][1] = c[j-1][1] + 1;
                 }
             }
 
+            //check if position is valid
+            if (isValid(ships[i], c, opponentBoard)) {
+                placeShips(ships[i], opponentBoard, c);
+                ships[i].setCoordinates(c);
+            } else {
+                i--;
+            }
+        }
+    }
+
+    public boolean isHit ( int[] coordinate, boolean[][] board){
+        if (board[coordinate[0]][coordinate[1]]) {
+            board[coordinate[0]][coordinate[1]] = false;
             return true;
         }
+        return false;
+    }
 
-        public void playerBoard () {
-            for (int i = 0; i < ships.length; i++) {
-                Random r = new Random();
+    public int[] convertToInt (String s){
+        int[] coordinates = new int[2];
+        coordinates[0] = Character.getNumericValue(s.charAt(0));
+        coordinates[1] = Character.getNumericValue(s.charAt(1));
+        return coordinates;
+    }
 
-                int[][] c = new int[ships[i].getSpaces()][2];
-                c[0][0] = r.nextInt(10); //number from 0-9
-                c[0][1] = r.nextInt(10);
-
-                //50% chance of ships being placed vertically or horizontally
-                if (r.nextInt() % 2 ==0){
-                    //horizontal placement
-                    for (int j = 1; j < c.length; j++) {
-                        c[j][0] = c[j-1][0] + 1;
-                        c[j][1] = c[j-1][1];
-                    }
-                } else {
-                    //vertical placement
-                    for (int j = 1; j < c.length; j++) {
-                        c[j][0] = c[j-1][0];
-                        c[j][1] = c[j-1][1] + 1;
-                    }
-                }
-
-                //check if position is valid
-                if (isValid(ships[i], c, playerBoard)) {
-                    placeShips(ships[i], playerBoard, c);
-                    ships[i].setCoordinates(c);
-                } else {
-                    i--;
-                }
+    public boolean hasLost ( boolean[][] board){
+        for (boolean[] coords : board) {
+            for (int j = 0; j < board.length; j++) {
+                if (coords[j])
+                    return false;
             }
         }
-        public boolean getPlayerturn () {
-            return playerTurn;
+
+        return true;
+    }
+
+    public void playerBoard () {
+        for (int i = 0; i < ships.length; i++) {
+            Random r = new Random();
+
+            int[][] c = new int[ships[i].getSpaces()][2];
+            c[0][0] = r.nextInt(10); //number from 0-9
+            c[0][1] = r.nextInt(10);
+
+            //50% chance of ships being placed vertically or horizontally
+            if (r.nextInt() % 2 ==0){
+                //horizontal placement
+                for (int j = 1; j < c.length; j++) {
+                    c[j][0] = c[j-1][0] + 1;
+                    c[j][1] = c[j-1][1];
+                }
+            } else {
+                //vertical placement
+                for (int j = 1; j < c.length; j++) {
+                    c[j][0] = c[j-1][0];
+                    c[j][1] = c[j-1][1] + 1;
+                }
+            }
+
+            //check if position is valid
+            if (isValid(ships[i], c, playerBoard)) {
+                placeShips(ships[i], playerBoard, c);
+                ships[i].setCoordinates(c);
+            } else {
+                i--;
+            }
         }
-        public void changeTurn () {
-            playerTurn = !playerTurn;
-        }
-    
+    }
+    public boolean getPlayerturn () {
+        return playerTurn;
+    }
+    public void changeTurn () {
+        playerTurn = !playerTurn;
+    }
+
     //https://www.baeldung.com/java-csv-file-array
     public List<List<String>> getHighScores(String filePath) throws Exception {
         List<List<String>> records = new ArrayList<>();
@@ -414,7 +441,7 @@ public class BattleShipClient2 extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            
+
             try {
                 writer.flush();
                 writer.close();
@@ -422,5 +449,95 @@ public class BattleShipClient2 extends Application {
                 e.printStackTrace();
             }
         }
+    }
+    public void save() throws Exception {
+        Writer writer=null;
+        String state_of_board="";
+        try{
+            //different line in the file different board.
+            writer=new BufferedWriter(new FileWriter(filename));
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(playerBoard[i][j]+",");
+                    writer.write(state_of_board);
+                }
+            }
+            writer.write("\n");
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(opponentBoard[i][j]+",");
+                    writer.write(state_of_board);
+                }
+            }
+            writer.write("\n");
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(hitboardPlayer[i][j]+",");
+                    writer.write(state_of_board);
+                }
+            }
+            writer.write("\n");
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(hitboardopponent[i][j]+",");
+                    writer.write(state_of_board);
+                }
+            }
+            writer.write("\n");
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(missboardPlayer[i][j]+",");
+                    writer.write(state_of_board);
+                }
+            }
+            writer.write("\n");
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(missboardopponent[i][j]+",");
+                    writer.write(state_of_board);
+                }
+            }
+            writer.write("\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            writer.flush();
+            writer.close();
+        }
+    }
+    public void load()throws Exception{
+       BufferedReader br=new BufferedReader(new FileReader(filename));
+       String[] entries=new String[300];
+       String[] bool=new String[100];
+       int index=0;
+       try{
+           //this string has columnindex,rowindex and value in that index of just the first line
+           String specific_line_text = Files.readAllLines(Paths.get(filename)).get(0);
+           System.out.println(specific_line_text);
+           //splitting it into array.so in this array 0,3,6 etc position has column,1,4,7 position has row and 2,5,8 position has true/false.
+           entries=specific_line_text.split(",",-1);
+           //i tried seperating the boolean values but still its not working.
+           for(int i=2;i<entries.length;i=i+3){
+               bool[index]=entries[i];
+               entries[i]="0";
+
+           }
+           for(int i=0;i<entries.length;i++){
+               System.out.println(Integer.parseInt(entries[i]));
+           }
+           /*for(int i=0;i<10;i++){
+               for(int j=0;j<10;j++){
+                  System.out.println(playerBoard[i][j]);
+               }
+           }*/
+       }catch (FileNotFoundException ex) {
+           ex.printStackTrace();
+
+       }
+       finally{
+           br.close();
+       }
+
+
     }
 }
