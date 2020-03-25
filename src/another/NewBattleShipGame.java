@@ -1,12 +1,17 @@
 package another;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 // TODO
 //  set up game GUI : player and opponent boards, log/chat box
@@ -72,12 +77,43 @@ public class NewBattleShipGame extends Application {
     void initializeMenu() {
         menu.setText("MENU");
 
-        MenuItem menuItem1 = new MenuItem("Menu Item 1");
-        MenuItem menuItem2 = new MenuItem("Menu Item 2");
-        MenuItem menuItem3 = new MenuItem("Menu Item 3");
-        menu.getItems().addAll(menuItem1, menuItem2, menuItem3);
+        MenuItem newGame = new MenuItem("New Game");
+        MenuItem saveGame = new MenuItem("Save Game");
+        MenuItem loadGame = new MenuItem("Load Game");
+        MenuItem exitGame = new MenuItem("Exit game");
+        menu.getItems().addAll(newGame, saveGame, loadGame,exitGame);
         menuBar.getMenus().add(menu);
+
+        //making the menu items do their action
+        newGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+               
+            }
+        });
+
+        saveGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        loadGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        exitGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.exit(0);
+            }
+        });
     }
+
 
     // fetch grid cells of each player, create game panel and add that panel to game window panel
     private void initializeGame() {
