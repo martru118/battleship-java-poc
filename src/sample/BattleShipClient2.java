@@ -418,11 +418,12 @@ public class BattleShipClient2 extends Application {
     }
 
     //https://www.baeldung.com/java-csv-file-array
-    public List<List<String>> getHighScores(String filePath) throws Exception {
+    public static List<List<String>> getHighScores(String filePath) throws Exception {
         List<List<String>> records = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
+            reader.readLine();  //skip header line
 
             //read contents of file
             while ((line = reader.readLine()) != null) {
@@ -430,7 +431,16 @@ public class BattleShipClient2 extends Application {
                 records.add(Arrays.asList(values));
             }
 
-            Collections.sort(records.get(1));
+            //sort array
+            Collections.sort(records, new Comparator<List<String>> () {
+                @Override
+                public int compare(List<String> current, List<String> other) {
+                    if (Integer.parseInt(current.get(1)) > Integer.parseInt(other.get(1)))
+                        return -1;
+                    else
+                        return 1;
+                }
+            });
             return records;
         }
     }
@@ -448,6 +458,7 @@ public class BattleShipClient2 extends Application {
         //write to file
         FileWriter writer = new FileWriter(filePath);
         try {
+            writer.append("player,score\n");
             writer.append(newScore.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -461,6 +472,7 @@ public class BattleShipClient2 extends Application {
             }
         }
     }
+    
     public void save() throws Exception {
         Writer writer=null;
         String state_of_board="";
