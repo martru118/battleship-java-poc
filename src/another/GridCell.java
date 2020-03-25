@@ -2,7 +2,6 @@ package another;
 
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
-import sample.Ship;
 
 // represents each cell on the grid of the game board
 
@@ -18,7 +17,7 @@ public class GridCell extends Button {
     //private Button btn; // pointer to the button object on the game board
     private String owner; // -1 = unoccupied, 0 = player, 1 = opponent
     private int index; // this cell's index ( linear )
-    private Ship ship;
+    private NewShip ship;
     boolean hit; // has an attack landed on this cell?
     Color cellColor = CELL_COLOR;
     String cellColorString;
@@ -55,7 +54,7 @@ public class GridCell extends Button {
     public int getCol(){ return index % BOARD_SIZE; }
     public int getRow(){ return index / BOARD_SIZE; }
     public boolean isHit() { return hit; }
-    public Ship getShip() { return ship; }
+    public NewShip getShip() { return ship; }
 
 
     // depreciated... no longer needed as GridCell itself inherits from Button class
@@ -63,7 +62,7 @@ public class GridCell extends Button {
 
 
     public void setOwner(String owner) { this.owner = owner; } // player or cpu
-    public void setShip( Ship ship ) { this.ship = ship; }
+    public void setShip( NewShip ship ) { this.ship = ship; }
 
     void updateColor() {
 

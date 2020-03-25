@@ -41,6 +41,14 @@ public class TestBoard extends GridPane {
         //hasBoard = true;
     }
 
+
+    // update color of cells after each ship placement
+    void refreshBoard() {
+        for (int i = 0; i < gridCells.length; i++) {
+
+        }
+    }
+
     public GridCell[] getGridCells() { return gridCells; } // fetch entire array of cells
     public GridCell getGridCell(int index) {
         return gridCells[index];
