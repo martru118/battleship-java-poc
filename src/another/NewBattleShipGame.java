@@ -1,19 +1,11 @@
 package another;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 // TODO
@@ -43,9 +35,10 @@ public class NewBattleShipGame extends Application {
     GridCell[] playerCells = new GridCell[CELL_NUM]; // use to access cells on players board
     GridCell[] cpuCells = new GridCell[CELL_NUM];
 
+    int turns = 1; // keeps track of number of turns taken
     int gamePhase; // -1: not started, 0: ship placement, 1: battle, 2: game over
     boolean gameOn = false; // has a game started? is it active now?
-    boolean turn = true; // true = player's turn
+    boolean turnCount = true; // true = player's turn
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -64,6 +57,7 @@ public class NewBattleShipGame extends Application {
         // set stage
         Scene scene = new Scene(stackPane);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
 
 
@@ -78,7 +72,7 @@ public class NewBattleShipGame extends Application {
 
     // shot fired at a cell, update the cell
     void updateCell(Button cell) {
-        if( turn ) {
+        if(turnCount) {
             //opponentGameBoard.updateCell( cell );
             //playerGameBoard.updateCell( playerGridButtons[makeRandomMove()] );
         } else {
@@ -124,13 +118,14 @@ public class NewBattleShipGame extends Application {
     }
 
     void changeTurn() {
-        turn = !turn;
+        turnCount = !turnCount;
     }
 
     void startGame() {
         gamePhase = 0; // -1: not started, 0: ship placement, 1: battle, 2: game over
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText("Start placing ships on your board");
+        alert.setContentText("Start placing ships on your board \n(RT click: horizontal)\n(LT click: vertical)");
+        alert.setHeaderText("Fleet Deployment");
         alert.show();
 
         //startShipPlacement();
@@ -138,9 +133,10 @@ public class NewBattleShipGame extends Application {
 
     void startBattlePhase() {
         // human player starts first
-        turn = true;
+        turnCount = true;
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText("Start firing at enemy location !");
+        alert.setHeaderText("Battle Begins");
         alert.show();
 
 
@@ -152,7 +148,7 @@ public class NewBattleShipGame extends Application {
         if(gamePhase == 1 && !targetCell.isHit()) {
             if ( targetCell.hasShip() ){
                 targetCell.setText("X");
-                System.out.println("HIT!!!");
+                System.out.println( targetCell.getShip().getName() + " is HIT!!!");
             }
             targetCell.setHit();
             checkGameOver();
@@ -177,11 +173,12 @@ public class NewBattleShipGame extends Application {
         target.setHit();
         checkGameOver();
         changeTurn();
+        turns++;
     }
 
     private void checkGameOver() {
         // TODO
-        if ( turn ){
+        if (turnCount){
             if ( cpu.isDefeated() ) {
                 gamePhase = 2;
                 displayGameOverMessage(player);
@@ -248,6 +245,7 @@ public class NewBattleShipGame extends Application {
     void displayGameOverMessage(Player winner) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(winner.getName() + " has won the battle!");
+        alert.setHeaderText("End of Game");
         alert.show();
     }
 

@@ -13,7 +13,7 @@ public class NewShip {
     private int orientation;
     private int hits; // number of hits taken, if equal or greater than ship's spaces, the ship is sunk
     private boolean isPlaced; // has the ship been placed on the board?
-    String shipCellColor = "silver";
+    String shipCellColor = "darkgrey";
 
     /**
     NewShip(String name, int spaces, int coordinate){
