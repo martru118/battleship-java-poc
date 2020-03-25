@@ -18,7 +18,7 @@ public class GridCell extends Button {
 
     // Fields
     //private Button btn; // pointer to the button object on the game board
-    private int owner; // -1 = unoccupied, 0 = player, 1 = opponent
+    private String owner; // -1 = unoccupied, 0 = player, 1 = opponent
     private int index; // this cell's index ( linear )
     private Ship ship;
     boolean hit; // has an attack landed on this cell?
@@ -33,10 +33,10 @@ public class GridCell extends Button {
         this.index = index;
         ship = null;
         hit = false;
-        owner = -1;
+        owner = "";
         setPrefSize(CELL_SIZE, CELL_SIZE);
         setOnAction(actionEvent -> {
-            System.out.println("cell[" + index + "](" + getCol() + "," + getRow() + ") clicked!");
+            System.out.println(owner + "'s cell[" + index + "](" + getCol() + "," + getRow() + ") clicked!");
 
             // ---test code---
             setColor("white");
@@ -51,7 +51,7 @@ public class GridCell extends Button {
     }
 
 
-    public int getOwner(){ return this.owner; }
+    public String getOwner(){ return this.owner; }
     public int getIndex(){ return this.index; }
     public int getCol(){ return index % BOARD_SIZE; }
     public int getRow(){ return index / BOARD_SIZE; }
@@ -63,7 +63,7 @@ public class GridCell extends Button {
     //public Button getButton() { return this.btn; } // returns pointer to the button element on the game board
 
 
-    public void setOwner(int owner) { this.owner = owner; } // -1 = unoccupied, 0 = player, 1 = opponent
+    public void setOwner(String owner) { this.owner = owner; } // player or cpu
     public void setShip( Ship ship ) { this.ship = ship; }
 
     void updateColor() {

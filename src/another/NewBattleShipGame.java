@@ -23,7 +23,7 @@ import javafx.stage.Stage;
  * Flow of game
  */
 
-public class BattleShipGame extends Application {
+public class NewBattleShipGame extends Application {
 
     final int BOARD_SIZE = 10; // the game board will have this number of rows and columns
     StackPane stackPane;
@@ -36,34 +36,12 @@ public class BattleShipGame extends Application {
     public void start(Stage stage) throws Exception {
 
         // initialize panes
-        /*
-
-               ------------StackPane-------------
-                -----------mainVBox----------------
-                   --------HBox------------
-                   --------HBox------------
-                   --------HBox------------
-                -------------------------------
-              -----------------------------------
-         */
 
         stackPane = new StackPane();
         stackPane.setPadding(new Insets(10,10,10,10));
 
-        VBox mainVBox = new VBox();
-
-        HBox labelHBox = new HBox();
-        labelHBox.setSpacing( 400.0 ); // place labels above corresponding game boards
-        Label playerBoardLabel = new Label("PLAYER");
-        Label opponentBoardLabel = new Label("OPPONENT");
-        labelHBox.getChildren().addAll(playerBoardLabel, opponentBoardLabel);
-
-        HBox boardHBox = new HBox();
-        boardHBox.setSpacing( 30.0d );
-        boardHBox.getChildren().addAll( playerBoard, opponentBoard );
-
-        mainVBox.getChildren().addAll(labelHBox, boardHBox);
-        stackPane.getChildren().add(mainVBox);
+        GamePanel gamePanel = new GamePanel();
+        stackPane.getChildren().add(gamePanel);
 
 
 
