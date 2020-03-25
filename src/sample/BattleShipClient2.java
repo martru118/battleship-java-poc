@@ -113,8 +113,8 @@ public class BattleShipClient2 extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 while (true) {
-                    Image imagewater=new Image("water.jpg");
-                    Image imagefire=new Image("fire.PNG");
+                    Image imagewater=new Image("/sample/water.jpg");
+                    Image imagefire=new Image("/sample/fire.jpg");
                     String fire="fire.mp3";
                     String water="water.mp3";
                     Media soundfire = new Media(new File(fire).toURI().toString());
@@ -310,7 +310,7 @@ public class BattleShipClient2 extends Application {
     public void placeShips (Ship ship,boolean[][] board, int[][] coordinate){
         for (int[] coords : coordinate) {
             board[coords[0]][coords[1]] = true;
-            Image imageship=new Image("ship.PNG");
+            Image imageship=new Image("/sample/ship.PNG");
             if (board == playerBoard) {
                 gcP.setFill(Color.AQUA);
                 //gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
