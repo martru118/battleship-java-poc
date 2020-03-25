@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 package sample;
 
-=======
-
-package sample
->>>>>>> 650c8a2d2986d2bb5ab2900a779c223df249b6cc
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
