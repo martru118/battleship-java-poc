@@ -10,6 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -110,6 +112,14 @@ public class BattleShipClient2 extends Application {
                 while (true) {
                     Image imagewater=new Image("water.jpg");
                     Image imagefire=new Image("fire.PNG");
+                    String fire="fire.mp3";
+                    String water="water.mp3";
+                    Media soundfire = new Media(new File(fire).toURI().toString());
+                    MediaPlayer mediafire = new MediaPlayer(soundfire);
+                    //mediafire.play();
+                    Media soundwater = new Media(new File(water).toURI().toString());
+                    MediaPlayer mediawater = new MediaPlayer(soundwater);
+                    //mediawater.play();
                     //player turn
                     if (getPlayerturn()) {
 
@@ -137,17 +147,14 @@ public class BattleShipClient2 extends Application {
                                 inputlength = coordinates.length();
                             });
                         }
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
 
 
                         if (isHit(coordinate, opponentBoard)) {
 
                             //gcO.setFill(Color.RED);
                             gcO.drawImage(imagefire,coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
+                            mediafire.play();
                             playerscore = playerscore + 25;
                             opponentscore = opponentscore - 25;
                             hitboardopponent[coordinate[0]][coordinate[1]]=true;
@@ -157,6 +164,7 @@ public class BattleShipClient2 extends Application {
                             missboardopponent[coordinate[0]][coordinate[1]]=true;
                             ta.appendText("You have missed. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
                             //gcO.setFill(Color.BLACK);
+                            mediawater.play();
                             gcO.drawImage(imagewater,coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
 
                         }
@@ -181,7 +189,9 @@ public class BattleShipClient2 extends Application {
                 */
 
                         changeTurn();
-                    } else {    //computer turn
+                    } else {
+                        //computer turn
+
                         Random r = new Random();
                         int[] coordinate2 = new int[2];
                         coordinate2[0] = r.nextInt(10);
@@ -193,33 +203,28 @@ public class BattleShipClient2 extends Application {
                         }
                         if (isHit(coordinate2, playerBoard)) {
 
-                            gcP.setFill(Color.RED);
+                            //gcP.setFill(Color.RED);
                             playerscore = playerscore - 25;
                             opponentscore = opponentscore + 25;
                             hitboardPlayer[coordinate2[0]][coordinate2[1]] = true;
                             gcP.drawImage(imagefire,coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
+                            mediafire.play();
                             ta.appendText("You have been HIT! \n " + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
-                            try {
-                                Thread.sleep(3000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+
                         } else {
                             ta.appendText("Opponent has missed. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
                             gcP.setFill(Color.BLACK);
+                            mediawater.play();
                             gcP.drawImage(imagewater,coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
                             missboardPlayer[coordinate2[0]][coordinate2[1]] = true;
-                            try {
-                                Thread.sleep(3000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+
                         }
                         //gcP.fillOval(coordinate2[0] * 50 + 20, coordinate2[1] * 50 + 20, 10, 10);
                         disclosedboardPlayer[coordinate2[0]][coordinate2[1]] = true;
 
                         changeTurn();
                     }
+
 
                     //check who has lost
                     if (hasLost(opponentBoard)) {
