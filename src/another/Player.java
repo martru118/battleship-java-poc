@@ -50,6 +50,15 @@ public class Player {
         this.score = score;
     }
 
+    public boolean isDefeated() {
+        boolean defeated = true;
+
+        for (int i = 0; i < ships.length; i++) {
+            defeated = defeated && ships[i].isSunk();
+        }
+        return defeated;
+    }
+
     public void setGameBoard(TestBoard gameBoard) {
         this.gameBoard = gameBoard;
     }

@@ -1,19 +1,11 @@
 package another;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 // TODO
@@ -25,7 +17,9 @@ import javafx.stage.Stage;
 //  game end
 
 /**
- * current bug... when placing ships, vertical placement overlaps with horizontal and vice versa
+ * current bugs...
+ * @ when placing ships, vertical placement overlaps with horizontal and vice versa
+ * @ program hangs when user clicks the last remaining cell during battle phase
  */
 
 public class NewBattleShipGame extends Application {
@@ -34,34 +28,40 @@ public class NewBattleShipGame extends Application {
 
     final int BOARD_SIZE = 10; // the game board will have this number of rows and columns
     final int CELL_NUM = BOARD_SIZE * BOARD_SIZE; // number of cells on a board
-    StackPane stackPane;
+    //StackPane stackPane;
+    BorderPane borderPane;
+    MenuBar menuBar = new MenuBar();
+    Menu menu = new Menu();
     //TestBoard playerBoard = new TestBoard("player"); // will contain grid of buttons(cells)
     //TestBoard opponentBoard = new TestBoard("cpu");
 
     GridCell[] playerCells = new GridCell[CELL_NUM]; // use to access cells on players board
     GridCell[] cpuCells = new GridCell[CELL_NUM];
 
+    int turns = 1; // keeps track of number of turns taken
     int gamePhase; // -1: not started, 0: ship placement, 1: battle, 2: game over
     boolean gameOn = false; // has a game started? is it active now?
-    boolean turn = true; // true = player's turn
+    boolean turnCount = true; // true = player's turn
 
     @Override
     public void start(Stage stage) throws Exception {
 
         // initialize panes
 
-        stackPane = new StackPane();
-        stackPane.setPadding(new Insets(10,10,10,10));
+        //stackPane = new StackPane();
+        borderPane = new BorderPane();
+        //stackPane.setPadding(new Insets(10,10,10,10));
 
-        GamePanel gamePanel = new GamePanel();
-        playerCells = gamePanel.getCells("player");
-        cpuCells = gamePanel.getCells("cpu");
-        setListener(); // sets event listener to cells
-        stackPane.getChildren().add(gamePanel);
+        // add menu to game window
+        initializeMenu();
+        borderPane.setTop(menuBar);
+
+        initializeGame();
 
         // set stage
-        Scene scene = new Scene(stackPane);
+        Scene scene = new Scene(borderPane);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
 
 
@@ -69,24 +69,24 @@ public class NewBattleShipGame extends Application {
 
     }
 
+    void initializeMenu() {
+        menu.setText("MENU");
 
-    private void makeMove(Button source) {
-
+        MenuItem menuItem1 = new MenuItem("Menu Item 1");
+        MenuItem menuItem2 = new MenuItem("Menu Item 2");
+        MenuItem menuItem3 = new MenuItem("Menu Item 3");
+        menu.getItems().addAll(menuItem1, menuItem2, menuItem3);
+        menuBar.getMenus().add(menu);
     }
 
-    // shot fired at a cell, update the cell
-    void updateCell(Button cell) {
-        if( turn ) {
-            //opponentGameBoard.updateCell( cell );
-            //playerGameBoard.updateCell( playerGridButtons[makeRandomMove()] );
-        } else {
-            // TODO make AI make a move
-            // for now make a random move on opponent's turn
-            //playerGameBoard.updateCell( playerGridButtons[makeRandomMove()] );
-        }
-
-        changeTurn();
-
+    // fetch grid cells of each player, create game panel and add that panel to game window panel
+    private void initializeGame() {
+        GamePanel gamePanel = new GamePanel();
+        playerCells = gamePanel.getCells("player");
+        cpuCells = gamePanel.getCells("cpu");
+        setListener(); // sets event listener to cells
+        //stackPane.getChildren().add(gamePanel);
+        borderPane.setCenter(gamePanel);
     }
 
     // set mouse click listeners to cpu's GridCells
@@ -122,27 +122,79 @@ public class NewBattleShipGame extends Application {
     }
 
     void changeTurn() {
-        turn = !turn;
+        turnCount = !turnCount;
     }
 
     void startGame() {
         gamePhase = 0; // -1: not started, 0: ship placement, 1: battle, 2: game over
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText("Start placing ships on your board");
+        alert.setContentText("Start placing ships on your board \n(RT click: horizontal)\n(LT click: vertical)");
+        alert.setHeaderText("Fleet Deployment");
         alert.show();
 
         //startShipPlacement();
     }
 
+    void startBattlePhase() {
+        // human player starts first
+        turnCount = true;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("Start firing at enemy location !");
+        alert.setHeaderText("Battle Begins");
+        alert.show();
+    }
+
     // player clicks a cell
-    void clickCell(GridCell cell) {
-        System.out.println(cell.getOwner() + "'s cell[" + cell.getIndex() + "](" + cell.getCol() + "," + cell.getRow()
+    void clickCell(GridCell targetCell) {
+
+        if(gamePhase == 1 && !targetCell.isHit()) {
+            if ( targetCell.hasShip() ){
+                targetCell.setText("X");
+                System.out.println( targetCell.getShip().getName() + " is HIT!!!");
+            }
+            targetCell.setHit();
+            checkGameOver();
+            changeTurn();
+            makeCpuMove();
+        }
+
+        // for test runs
+        System.out.println(targetCell.getOwner() + "'s targetCell[" + targetCell.getIndex() + "](" + targetCell.getCol() + "," + targetCell.getRow()
                             + ") clicked!");
 
         return;
     }
 
-    // cpu's move will be passed using thie method
+
+    // cpu attacks player
+    // the attacks are purely random for now
+    // TODO make cpu make smarter moves
+    private void makeCpuMove() {
+        GridCell target = playerCells[makeRandomMove()];
+        while ( target.isHit() ) {
+            target = playerCells[makeRandomMove()];
+        }
+        target.setHit();
+        checkGameOver();
+        changeTurn();
+        turns++;
+    }
+
+    private void checkGameOver() {
+        if (turnCount){
+            if ( cpu.isDefeated() ) {
+                gamePhase = 2;
+                displayGameOverMessage(player);
+            }
+        } else {
+            if (player.isDefeated() ) {
+                gamePhase = 2;
+                displayGameOverMessage(cpu);
+            };
+        }
+    }
+
+    // cpu's move will be passed using this method
     boolean clickCell(int cellIndex) {
         return true;
     }
@@ -160,10 +212,8 @@ public class NewBattleShipGame extends Application {
             if(!ship.isPlaced()){
                 if(ship.isValidPlacement(cell,playerCells, shipOrientation)){
                     ship.placeShip(cell, playerCells, shipOrientation);
-                    break;
-                } else {
-                    break;
                 }
+                break;
             }
         }
 
@@ -174,10 +224,32 @@ public class NewBattleShipGame extends Application {
         }
         if( allShipsPlaced ) {
             System.out.println("All ships deployed!");
-            gamePhase++;
+            gamePhase = 1;
+            placeCpuShips();
+            startBattlePhase();
         }
 
     }
 
+    // for now the cpu places ships at fixed positions
+    void placeCpuShips() {
+        // TODO randomize cpu's ship placement
+        NewShip[] cpuShips = new NewShip[5];
+        cpuShips = cpu.getShips();
+        cpuShips[0].placeShip(cpuCells[0],cpuCells,1);
+        cpuShips[1].placeShip(cpuCells[4],cpuCells,1);
+        cpuShips[2].placeShip(cpuCells[70],cpuCells,0);
+        cpuShips[3].placeShip(cpuCells[90],cpuCells,0);
+        cpuShips[4].placeShip(cpuCells[45],cpuCells,1);
+        System.out.println("CPU ships deployed!");
+    }
+
+
+    void displayGameOverMessage(Player winner) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(winner.getName() + " has won the battle!");
+        alert.setHeaderText("End of Game");
+        alert.show();
+    }
 
 }

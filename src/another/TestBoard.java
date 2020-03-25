@@ -37,7 +37,7 @@ public class TestBoard extends GridPane {
             gridCells[i].setOwner(owner);
             this.add(gridCells[i], col, row);
         }
-        setStyle("-fx-border-color: black; -fx-border-width: 3");
+        setStyle("-fx-border-color: black; -fx-border-width: 2");
         //hasBoard = true;
     }
 

@@ -34,7 +34,7 @@ public class GridCell extends Button {
         setPrefSize(CELL_SIZE, CELL_SIZE);
         setOnAction(actionEvent -> {
 
-            this.click();
+            //this.cellClick();
             // ---test code---
             //System.out.println(owner + "'s cell[" + index + "](" + getCol() + "," + getRow() + ") clicked!");
             //setColor("white");
@@ -54,6 +54,7 @@ public class GridCell extends Button {
     public int getCol(){ return index % BOARD_SIZE; }
     public int getRow(){ return index / BOARD_SIZE; }
     public boolean isHit() { return hit; }
+    public boolean hasShip() { return ship != null; }
     public NewShip getShip() { return ship; }
 
 
@@ -70,12 +71,20 @@ public class GridCell extends Button {
 
     public void setHit() {
         this.hit = true;
+        if( hasShip() ) {
+            setColor("red");
+            ship.addHit();
+        } else {
+            setColor( "white" );
+        }
     }
 
     // change the button element's background color
     void setColor(String newColor) { setStyle("-fx-border-color: darkgrey; -fx-background-color: " + newColor); }
 
-    public GridCell click() {
-        return this;
+    public void cellClick() {
+
+
+
     }
 }
