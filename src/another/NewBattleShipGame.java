@@ -56,12 +56,7 @@ public class NewBattleShipGame extends Application {
         initializeMenu();
         borderPane.setTop(menuBar);
 
-        GamePanel gamePanel = new GamePanel();
-        playerCells = gamePanel.getCells("player");
-        cpuCells = gamePanel.getCells("cpu");
-        setListener(); // sets event listener to cells
-        //stackPane.getChildren().add(gamePanel);
-        borderPane.setCenter(gamePanel);
+        initializeGame();
 
         // set stage
         Scene scene = new Scene(borderPane);
@@ -72,6 +67,26 @@ public class NewBattleShipGame extends Application {
 
         startGame();
 
+    }
+
+    void initializeMenu() {
+        menu.setText("MENU");
+
+        MenuItem menuItem1 = new MenuItem("Menu Item 1");
+        MenuItem menuItem2 = new MenuItem("Menu Item 2");
+        MenuItem menuItem3 = new MenuItem("Menu Item 3");
+        menu.getItems().addAll(menuItem1, menuItem2, menuItem3);
+        menuBar.getMenus().add(menu);
+    }
+
+    // fetch grid cells of each player, create game panel and add that panel to game window panel
+    private void initializeGame() {
+        GamePanel gamePanel = new GamePanel();
+        playerCells = gamePanel.getCells("player");
+        cpuCells = gamePanel.getCells("cpu");
+        setListener(); // sets event listener to cells
+        //stackPane.getChildren().add(gamePanel);
+        borderPane.setCenter(gamePanel);
     }
 
     // set mouse click listeners to cpu's GridCells
@@ -235,16 +250,6 @@ public class NewBattleShipGame extends Application {
         alert.setContentText(winner.getName() + " has won the battle!");
         alert.setHeaderText("End of Game");
         alert.show();
-    }
-
-    void initializeMenu() {
-        menu.setText("MENU");
-
-        MenuItem menuItem1 = new MenuItem("Menu Item 1");
-        MenuItem menuItem2 = new MenuItem("Menu Item 2");
-        MenuItem menuItem3 = new MenuItem("Menu Item 3");
-        menu.getItems().addAll(menuItem1, menuItem2, menuItem3);
-        menuBar.getMenus().add(menu);
     }
 
 }
