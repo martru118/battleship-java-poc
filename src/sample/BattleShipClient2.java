@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -41,8 +40,10 @@ public class BattleShipClient2 extends Application {
     int[] coordinate={10,10};
     //to make sure what input length is put by the user.
     int inputlength=0;
+    String userinput="";
     public int playerscore;
     public int opponentscore;
+
     //game saving
     String filename="current game.txt";
     //io streams
@@ -70,6 +71,7 @@ public class BattleShipClient2 extends Application {
         //set stage
         Button startGame = new Button("START THE GAME");
         Button exitGame = new Button("EXIT THE GAME");
+        tf.setPromptText("Enter the Column Number and then the Row number (eg. 74)");
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
         pane.add(tf, 0, 1, 2, 1);
@@ -105,13 +107,14 @@ public class BattleShipClient2 extends Application {
         //play game
 
 
+
         startGame.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 
             @Override
             public void handle(ActionEvent actionEvent) {
                 while (true) {
-                    Image imagewater=new Image("water.jpg");
-                    Image imagefire=new Image("fire.PNG");
+                    Image imagewater=new Image("/sample/water.jpg");
+                    Image imagefire=new Image("/sample/fire.jpg");
                     String fire="fire.mp3";
                     String water="water.mp3";
                     Media soundfire = new Media(new File(fire).toURI().toString());
@@ -119,18 +122,21 @@ public class BattleShipClient2 extends Application {
                     //mediafire.play();
                     Media soundwater = new Media(new File(water).toURI().toString());
                     MediaPlayer mediawater = new MediaPlayer(soundwater);
+                    TextInputDialog tid = new TextInputDialog("");
+                    tid.setHeaderText("Enter the Column Number and then the Row number (eg. 74)");
+
+                    final Button cancel = (Button) tid.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.addEventFilter(ActionEvent.ACTION, event ->
+                            tid.showAndWait()
+                    );
                     //mediawater.play();
+                    //userinput=tf.getText();
+                    //coordinate[0] = Character.getNumericValue(userinput.charAt(0));
+                    //coordinate[1] = Character.getNumericValue(userinput.charAt(1));
+                    //coordinate = convertToInt(tf.getText());
+                   // inputlength=userinput.length();
                     //player turn
                     if (getPlayerturn()) {
-
-                        TextInputDialog tid = new TextInputDialog("");
-                        tid.setHeaderText("Enter the Column Number and then the Row number (eg. 74)");
-
-                        final Button cancel = (Button) tid.getDialogPane().lookupButton(ButtonType.CANCEL);
-                        cancel.addEventFilter(ActionEvent.ACTION, event ->
-                                tid.showAndWait()
-                        );
-
 
                 /*
                 tid.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
@@ -304,7 +310,7 @@ public class BattleShipClient2 extends Application {
     public void placeShips (Ship ship,boolean[][] board, int[][] coordinate){
         for (int[] coords : coordinate) {
             board[coords[0]][coords[1]] = true;
-            Image imageship=new Image("ship.PNG");
+            Image imageship=new Image("/sample/ship.PNG");
             if (board == playerBoard) {
                 gcP.setFill(Color.AQUA);
                 //gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
