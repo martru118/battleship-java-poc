@@ -134,15 +134,54 @@ public class NewBattleShipGame extends Application {
         //startShipPlacement();
     }
 
+    void startBattlePhase() {
+        // human player starts first
+        turn = true;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("Start firing at enemy location !");
+        alert.show();
+
+
+    }
+
     // player clicks a cell
-    void clickCell(GridCell cell) {
-        System.out.println(cell.getOwner() + "'s cell[" + cell.getIndex() + "](" + cell.getCol() + "," + cell.getRow()
+    void clickCell(GridCell targetCell) {
+
+        if(gamePhase == 1 && !targetCell.isHit()) {
+            if ( targetCell.hasShip() ){
+                targetCell.setText("X");
+                System.out.println("HIT!!!");
+            }
+            targetCell.setHit();
+            checkGameOver();
+            changeTurn();
+            makeCpuMove();
+        }
+
+        // for test runs
+        System.out.println(targetCell.getOwner() + "'s targetCell[" + targetCell.getIndex() + "](" + targetCell.getCol() + "," + targetCell.getRow()
                             + ") clicked!");
 
         return;
     }
 
-    // cpu's move will be passed using thie method
+
+
+    private void makeCpuMove() {
+        GridCell target = playerCells[makeRandomMove()];
+        while ( target.isHit() ) {
+            target = playerCells[makeRandomMove()];
+        }
+        target.setHit();
+        checkGameOver();
+        changeTurn();
+    }
+
+    private void checkGameOver() {
+        // TODO
+    }
+
+    // cpu's move will be passed using this method
     boolean clickCell(int cellIndex) {
         return true;
     }
@@ -174,9 +213,22 @@ public class NewBattleShipGame extends Application {
         }
         if( allShipsPlaced ) {
             System.out.println("All ships deployed!");
-            gamePhase++;
+            gamePhase = 1;
+            placeCpuShips();
+            startBattlePhase();
         }
 
+    }
+
+    void placeCpuShips() {
+        NewShip[] cpuShips = new NewShip[5];
+        cpuShips = cpu.getShips();
+        cpuShips[0].placeShip(cpuCells[0],cpuCells,1);
+        cpuShips[1].placeShip(cpuCells[4],cpuCells,1);
+        cpuShips[2].placeShip(cpuCells[70],cpuCells,0);
+        cpuShips[3].placeShip(cpuCells[90],cpuCells,0);
+        cpuShips[4].placeShip(cpuCells[45],cpuCells,1);
+        System.out.println("CPU ships deployed!");
     }
 
 
