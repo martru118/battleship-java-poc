@@ -3,8 +3,8 @@ package another;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -28,7 +28,10 @@ public class NewBattleShipGame extends Application {
 
     final int BOARD_SIZE = 10; // the game board will have this number of rows and columns
     final int CELL_NUM = BOARD_SIZE * BOARD_SIZE; // number of cells on a board
-    StackPane stackPane;
+    //StackPane stackPane;
+    BorderPane borderPane;
+    MenuBar menuBar = new MenuBar();
+    Menu menu = new Menu();
     //TestBoard playerBoard = new TestBoard("player"); // will contain grid of buttons(cells)
     //TestBoard opponentBoard = new TestBoard("cpu");
 
@@ -45,17 +48,23 @@ public class NewBattleShipGame extends Application {
 
         // initialize panes
 
-        stackPane = new StackPane();
-        stackPane.setPadding(new Insets(10,10,10,10));
+        //stackPane = new StackPane();
+        borderPane = new BorderPane();
+        //stackPane.setPadding(new Insets(10,10,10,10));
+
+        // add menu to game window
+        initializeMenu();
+        borderPane.setTop(menuBar);
 
         GamePanel gamePanel = new GamePanel();
         playerCells = gamePanel.getCells("player");
         cpuCells = gamePanel.getCells("cpu");
         setListener(); // sets event listener to cells
-        stackPane.getChildren().add(gamePanel);
+        //stackPane.getChildren().add(gamePanel);
+        borderPane.setCenter(gamePanel);
 
         // set stage
-        Scene scene = new Scene(stackPane);
+        Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
@@ -226,6 +235,16 @@ public class NewBattleShipGame extends Application {
         alert.setContentText(winner.getName() + " has won the battle!");
         alert.setHeaderText("End of Game");
         alert.show();
+    }
+
+    void initializeMenu() {
+        menu.setText("MENU");
+
+        MenuItem menuItem1 = new MenuItem("Menu Item 1");
+        MenuItem menuItem2 = new MenuItem("Menu Item 2");
+        MenuItem menuItem3 = new MenuItem("Menu Item 3");
+        menu.getItems().addAll(menuItem1, menuItem2, menuItem3);
+        menuBar.getMenus().add(menu);
     }
 
 }

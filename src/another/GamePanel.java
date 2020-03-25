@@ -1,8 +1,6 @@
 package another;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -14,6 +12,11 @@ public class GamePanel extends GridPane {
     // Fields
     BorderPane playerPane = new BorderPane();
     BorderPane cpuPane = new BorderPane();
+
+    // Menubar elements
+    MenuBar menubar = new MenuBar();
+    Menu menu = new Menu();
+
     // rows and columns markers
     final double BUTTON_SIZE = 40.0;
     HBox hBox1 = new HBox();
@@ -48,8 +51,11 @@ public class GamePanel extends GridPane {
     private void initialize() {
         setHgap(5.0);
 
+        // add  elements
+        // for now the first row of this main grid pain is empty
+
         // place elements to self
-        add(timerLabel,0,0);
+        add(timerLabel,0,1);
 
         // rows and columns markers
         buildMarkers();
@@ -59,19 +65,22 @@ public class GamePanel extends GridPane {
         playerPane.setCenter( playerBoard );
         playerPane.setTop(hBox1);
         playerPane.setLeft(vBox1);
-        add(playerBoardLabel,0,1);
-        add(playerPane, 0,2);
+        add(playerBoardLabel,0,2);
+        add(playerPane, 0,3);
 
         // cpu side elements
         cpuBoard = new TestBoard("cpu");
         cpuPane.setCenter( cpuBoard );
         cpuPane.setTop(hBox2);
         cpuPane.setRight(vBox2);
-        add(cpuBoardLabel,1,1);
-        add(cpuPane,1,2);
+        add(cpuBoardLabel,1,2);
+        add(cpuPane,1,3);
+
+        // add additional buttons here
+
 
         // add system log
-        add(gameLogTextField,0,3);
+        add(gameLogTextField,0,4);
     }
 
     void buildMarkers() {
