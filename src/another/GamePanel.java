@@ -12,6 +12,9 @@ public class GamePanel extends GridPane {
     BorderPane playerPane = new BorderPane();
     BorderPane cpuPane = new BorderPane();
 
+    TestBoard playerBoard;
+    TestBoard cpuBoard;
+
     Label playerBoardLabel = new Label("PLAYER");
     Label cpuBoardLabel = new Label("CPU");
 
@@ -34,12 +37,14 @@ public class GamePanel extends GridPane {
         add(timerLabel,0,0);
 
         // player side elements
-        playerPane.setCenter(new TestBoard("player"));
+        playerBoard = new TestBoard("player");
+        playerPane.setCenter( playerBoard );
         add(playerBoardLabel,0,1);
         add(playerPane, 0,2);
 
         // cpu side elements
-        cpuPane.setCenter(new TestBoard("cpu"));
+        cpuBoard = new TestBoard("cpu");
+        cpuPane.setCenter( cpuBoard );
         add(cpuBoardLabel,1,1);
         add(cpuPane,1,2);
 
@@ -49,6 +54,14 @@ public class GamePanel extends GridPane {
 
 
     // Methods
+    public GridCell[] getCells(String owner) {
+        if ( owner == "player") {
+            return playerBoard.getGridCells();
+        } else if ( owner == "cpu") {
+            return cpuBoard.getGridCells();
+        }
+        return null;
+    }
 
 
 }
