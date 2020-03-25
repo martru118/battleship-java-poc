@@ -5,8 +5,6 @@ import javafx.scene.paint.Color;
 import sample.Ship;
 
 // represents each cell on the grid of the game board
-// has pointer to button elements which are placed on the gridpane for access and manipulation
-// contains each cell's data
 
 public class GridCell extends Button {
     // color enums
@@ -36,11 +34,12 @@ public class GridCell extends Button {
         owner = "";
         setPrefSize(CELL_SIZE, CELL_SIZE);
         setOnAction(actionEvent -> {
-            System.out.println(owner + "'s cell[" + index + "](" + getCol() + "," + getRow() + ") clicked!");
 
+            this.click();
             // ---test code---
-            setColor("white");
-            setText("X");
+            //System.out.println(owner + "'s cell[" + index + "](" + getCol() + "," + getRow() + ") clicked!");
+            //setColor("white");
+            //setText("X");
             // ---end of test code---
         });
     }
@@ -76,4 +75,8 @@ public class GridCell extends Button {
 
     // change the button element's background color
     void setColor(String newColor) { setStyle("-fx-border-color: darkgrey; -fx-background-color: " + newColor); }
+
+    public GridCell click() {
+        return this;
+    }
 }
