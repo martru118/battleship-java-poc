@@ -418,7 +418,7 @@ public class BattleShipClient2 extends Application {
     }
 
     //https://www.baeldung.com/java-csv-file-array
-    public static List<List<String>> getHighScores(String filePath) throws Exception {
+    public List<List<String>> getHighScores(String filePath) throws Exception {
         List<List<String>> records = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
