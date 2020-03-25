@@ -97,6 +97,14 @@ public class NewShip {
         return false;
     }
 
+    /**
+     * increment number of hits this ship has taken by 1
+     */
+    public void addHit(){
+        hits++;
+        if ( hits >= spaces ) { sunk = true; }
+    }
+
     //check if ship has been sunk
     public boolean isSunk() {
         return hits == spaces;

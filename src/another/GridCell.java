@@ -73,6 +73,7 @@ public class GridCell extends Button {
         this.hit = true;
         if( hasShip() ) {
             setColor("red");
+            ship.addHit();
         } else {
             setColor( "white" );
         }

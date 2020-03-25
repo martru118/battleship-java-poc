@@ -25,7 +25,9 @@ import javafx.stage.Stage;
 //  game end
 
 /**
- * current bug... when placing ships, vertical placement overlaps with horizontal and vice versa
+ * current bugs...
+ * @ when placing ships, vertical placement overlaps with horizontal and vice versa
+ * @ program hangs when user clicks the last remaining cell during battle phase
  */
 
 public class NewBattleShipGame extends Application {
@@ -179,6 +181,17 @@ public class NewBattleShipGame extends Application {
 
     private void checkGameOver() {
         // TODO
+        if ( turn ){
+            if ( cpu.isDefeated() ) {
+                gamePhase = 2;
+                displayGameOverMessage(player);
+            }
+        } else {
+            if (player.isDefeated() ) {
+                gamePhase = 2;
+                displayGameOverMessage(cpu);
+            };
+        }
     }
 
     // cpu's move will be passed using this method
@@ -231,5 +244,11 @@ public class NewBattleShipGame extends Application {
         System.out.println("CPU ships deployed!");
     }
 
+
+    void displayGameOverMessage(Player winner) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(winner.getName() + " has won the battle!");
+        alert.show();
+    }
 
 }
