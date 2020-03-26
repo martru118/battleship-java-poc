@@ -408,7 +408,6 @@ public class BattleShipClient2 extends Application {
         }
     }
 
-
     public int[] convertToInt(String s) {
         int[] coordinates = new int[2];
         coordinates[0] = Character.getNumericValue(s.charAt(0));
@@ -425,55 +424,42 @@ public class BattleShipClient2 extends Application {
         numberofturns++;
     }
 
-    //https://www.baeldung.com/java-csv-file-array
-  /*  public List<List<String>> getHighScores(String filePath) throws Exception {
-        List<List<String>> records = new ArrayList<>();
+    public List<String> getHighScores(String filePath) throws Exception {
+        List<String> records = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
 
             //read contents of file
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                records.add(Arrays.asList(values));
+                records.add(line);
             }
 
-            Collections.sort(records.get(1));
+            //sort array
+            Collections.sort(records, new Comparator<String> () {
+                @Override
+                public int compare(String current, String other) {
+                    return Integer.valueOf(current).compareTo(Integer.valueOf(other));
+                }
+            });
             return records;
         }
-    }*/
+    }
 
-    //https://examples.javacodegeeks.com/core-java/writeread-csv-files-in-java-example/
-  /*  public void writeScores(String filePath) throws Exception {
-        Score newScore;     //generate new score
-
-<<<<<<< HEAD
     public void writeScores(String filePath) throws Exception {
         FileWriter writer = new FileWriter(filePath, true);
-
-=======
-        //check who won
-        if (getPlayerturn())
-            newScore = new Score("Player", playerscore);
-
-
-        //write to file
-        FileWriter writer = new FileWriter(filePath);
->>>>>>> 85bbd45a4105668bb13c008c42d914bb411b4795
+        
         try {
-            writer.append(newScore.toString());
+            //write to score to file
+            writer.append(playerscore + "\n");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
-            try {
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //close filewriter
+            writer.flush();
+            writer.close();
         }
-    }*/
+    }
 
     public void save() throws Exception {
         Writer writer = null;
