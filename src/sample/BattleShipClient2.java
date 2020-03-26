@@ -72,10 +72,13 @@ public class BattleShipClient2 extends Application {
         Button startGame = new Button("START THE GAME");
         Button exitGame = new Button("EXIT THE GAME");
         Button resumegame = new Button("RESUME THE PREVIOUS GAME");
-        tf.setPromptText("Enter the Column Number and then the Row number (eg. 74)");
+        tf.setPromptText("Enter Name");
+        tf.setMaxWidth(500);
+        ta.setEditable(false);
+        tf.setAlignment(Pos.CENTER_LEFT);
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
-        pane.add(tf, 0, 1, 2, 1);
+        pane.add(tf, 0, 2, 2, 1);
         pane.add(ta, 0, 4, 2, 1);
         pane.add(startGame, 0, 2, 2, 1);
         pane.add(resumegame, 1, 2, 2, 1);
