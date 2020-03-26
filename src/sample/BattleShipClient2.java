@@ -129,6 +129,7 @@ public class BattleShipClient2 extends Application {
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
+        stage.setMaximized(true);
         stage.show();
 
         //set boards
