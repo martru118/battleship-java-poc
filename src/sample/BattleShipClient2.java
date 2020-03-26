@@ -76,10 +76,10 @@ public class BattleShipClient2 extends Application {
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
         pane.add(tf, 0, 1, 2, 1);
-        pane.add(ta, 0, 3, 2, 1);
-        pane.add(startGame, 0, 1, 2, 1);
-        pane.add(resumegame, 1, 1, 2, 1);
-        pane.add(exitGame, 0, 2, 2, 1);
+        pane.add(ta, 0, 4, 2, 1);
+        pane.add(startGame, 0, 2, 2, 1);
+        pane.add(resumegame, 1, 2, 2, 1);
+        pane.add(exitGame, 0, 3, 2, 1);
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
@@ -109,16 +109,16 @@ public class BattleShipClient2 extends Application {
         //play game
 
         resumegame.setOnAction(new EventHandler<ActionEvent>() {
-             @Override
-             public void handle(ActionEvent actionEvent) {
-                 try {
-                     load();
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    load();
 
-                 } catch (Exception e) {
-                     e.printStackTrace();
-                 }
-             }
-         });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         startGame.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 
@@ -141,7 +141,7 @@ public class BattleShipClient2 extends Application {
                     cancel.addEventFilter(ActionEvent.ACTION, event ->
                             tid.showAndWait()
                     );
-                    
+
                     //player turn
                     if (getPlayerturn()) {
 
@@ -150,7 +150,6 @@ public class BattleShipClient2 extends Application {
                     if (!newValue.matches("\\d{0,1}([\\,]\\d{0,1})?"))
                         tid.getEditor().setText(oldValue);
                 });
-
                  */
                         while (!isValidMove(coordinate, disclosedboardopponent) || inputlength != 2) {
                             Optional<String> c = tid.showAndWait();
@@ -267,13 +266,10 @@ public class BattleShipClient2 extends Application {
         /*connect to server
         try {
             Socket socket = new Socket("localhost",8000);
-
             //create an input stream to send data to the server
             fromServer = new DataInputStream(socket.getInputStream());
-
             //create an output stream to send data to the server
             toServer = new DataOutputStream(socket.getOutputStream());
-
         } catch (IOException e) {
             e.printStackTrace();
         }   */
@@ -536,159 +532,159 @@ public class BattleShipClient2 extends Application {
         }
     }
     public void load() throws Exception {
-          BufferedReader br = new BufferedReader(new FileReader(filename));
+        BufferedReader br = new BufferedReader(new FileReader(filename));
 
-          String[] entries = new String[300];
-          String[] bool = new String[100];
-          int index = 0;
-          try {
-              //this string has columnindex,rowindex and value in that index of just the first line
-              String specific_line_text = Files.readAllLines(Paths.get(filename)).get(0);
-              System.out.println(specific_line_text);
+        String[] entries = new String[300];
+        String[] bool = new String[100];
+        int index = 0;
+        try {
+            //this string has columnindex,rowindex and value in that index of just the first line
+            String specific_line_text = Files.readAllLines(Paths.get(filename)).get(0);
+            System.out.println(specific_line_text);
 
-              entries = specific_line_text.split(",", -1);
-              //loading the player board
-              for (int i = 0; i < entries.length; i++) {
-                  try {
-                      playerBoard[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
-                  } catch (NumberFormatException e) {
-                      System.out.println("");
-                  }
-              }
-              Image imageship = new Image("/sample/ship.PNG");
+            entries = specific_line_text.split(",", -1);
+            //loading the player board
+            for (int i = 0; i < entries.length; i++) {
+                try {
+                    playerBoard[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                } catch (NumberFormatException e) {
+                    System.out.println("");
+                }
+            }
+            Image imageship = new Image("/sample/ship.PNG");
 
-              cleanBoard(playerBoard,gcP);
-              for (int j = 0; j < 10; j++) {
-                  for (int k = 0; k < 10; k++) {
-                      if (playerBoard[j][k]) {
-                          gcP.drawImage(imageship, j * 50 + 2, k * 50 + 2, 45, 45);
-                      }
-                  }
-              }
-              //loading the opponent board
-               specific_line_text = Files.readAllLines(Paths.get(filename)).get(1);
-
-
-              entries = specific_line_text.split(",", -1);
-              cleanBoard(opponentBoard,gcO);
-              for (int i = 0; i < entries.length; i++) {
-                  try {
-                      opponentBoard[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
-                  } catch (NumberFormatException e) {
-                      System.out.println("");
-                  }
-              }
-              //loading the hit board for player
-              specific_line_text = Files.readAllLines(Paths.get(filename)).get(2);
+            cleanBoard(playerBoard,gcP);
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (playerBoard[j][k]) {
+                        gcP.drawImage(imageship, j * 50 + 2, k * 50 + 2, 45, 45);
+                    }
+                }
+            }
+            //loading the opponent board
+            specific_line_text = Files.readAllLines(Paths.get(filename)).get(1);
 
 
-              entries = specific_line_text.split(",", -1);
-
-              for (int i = 0; i < entries.length; i++) {
-                  try {
-                      hitboardPlayer[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
-                  } catch (NumberFormatException e) {
-                      System.out.println("jbj");
-                  }
-              }
-              Image imagefire = new Image("/sample/fire.PNG");
-
-
-              for (int j = 0; j < 10; j++) {
-                  for (int k = 0; k < 10; k++) {
-                      if (hitboardPlayer[j][k]) {
-                          gcP.drawImage(imagefire, j * 50 + 2, k * 50 + 2, 45, 45);
-                      }
-                  }
-              }
-              specific_line_text = Files.readAllLines(Paths.get(filename)).get(3);
+            entries = specific_line_text.split(",", -1);
+            cleanBoard(opponentBoard,gcO);
+            for (int i = 0; i < entries.length; i++) {
+                try {
+                    opponentBoard[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                } catch (NumberFormatException e) {
+                    System.out.println("");
+                }
+            }
+            //loading the hit board for player
+            specific_line_text = Files.readAllLines(Paths.get(filename)).get(2);
 
 
-              entries = specific_line_text.split(",", -1);
+            entries = specific_line_text.split(",", -1);
 
-              for (int i = 0; i < entries.length; i++) {
-                  try {
-                      hitboardopponent[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
-                  } catch (NumberFormatException e) {
-                      System.out.println("jbj");
-                  }
-              }
-
-
-              //cleanBoard(playerBoard,gcP);
-              for (int j = 0; j < 10; j++) {
-                  for (int k = 0; k < 10; k++) {
-                      if (hitboardopponent[j][k]) {
-                          gcO.drawImage(imagefire, j * 50 + 2, k * 50 + 2, 45, 45);
-                      }
-                  }
-              }
-              specific_line_text = Files.readAllLines(Paths.get(filename)).get(4);
+            for (int i = 0; i < entries.length; i++) {
+                try {
+                    hitboardPlayer[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                } catch (NumberFormatException e) {
+                    System.out.println("jbj");
+                }
+            }
+            Image imagefire = new Image("/sample/fire.PNG");
 
 
-              entries = specific_line_text.split(",", -1);
-
-              for (int i = 0; i < entries.length; i++) {
-                  try {
-                      missboardPlayer[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
-                  } catch (NumberFormatException e) {
-                      System.out.println("");
-                  }
-              }
-              Image imagewater = new Image("/sample/water.jpg");
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (hitboardPlayer[j][k]) {
+                        gcP.drawImage(imagefire, j * 50 + 2, k * 50 + 2, 45, 45);
+                    }
+                }
+            }
+            specific_line_text = Files.readAllLines(Paths.get(filename)).get(3);
 
 
-              for (int j = 0; j < 10; j++) {
-                  for (int k = 0; k < 10; k++) {
-                      if (missboardPlayer[j][k]) {
-                          gcP.drawImage(imagewater, j * 50 + 2, k * 50 + 2, 45, 45);
-                      }
-                  }
-              }
-              specific_line_text = Files.readAllLines(Paths.get(filename)).get(5);
+            entries = specific_line_text.split(",", -1);
+
+            for (int i = 0; i < entries.length; i++) {
+                try {
+                    hitboardopponent[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                } catch (NumberFormatException e) {
+                    System.out.println("jbj");
+                }
+            }
 
 
-              entries = specific_line_text.split(",", -1);
-
-              for (int i = 0; i < entries.length; i++) {
-                  try {
-                      missboardopponent[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
-                  } catch (NumberFormatException e) {
-                      System.out.println("");
-                  }
-              }
-
-
-
-              for (int j = 0; j < 10; j++) {
-                  for (int k = 0; k < 10; k++) {
-                      if (missboardopponent[j][k]) {
-                          gcO.drawImage(imagewater, j * 50 + 2, k * 50 + 2, 45, 45);
-                      }
-                  }
-              }
+            //cleanBoard(playerBoard,gcP);
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (hitboardopponent[j][k]) {
+                        gcO.drawImage(imagefire, j * 50 + 2, k * 50 + 2, 45, 45);
+                    }
+                }
+            }
+            specific_line_text = Files.readAllLines(Paths.get(filename)).get(4);
 
 
-          } catch (FileNotFoundException ex) {
-              ex.printStackTrace();
+            entries = specific_line_text.split(",", -1);
 
-          } finally {
-              br.close();
-          }
+            for (int i = 0; i < entries.length; i++) {
+                try {
+                    missboardPlayer[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                } catch (NumberFormatException e) {
+                    System.out.println("");
+                }
+            }
+            Image imagewater = new Image("/sample/water.jpg");
 
 
-      }
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (missboardPlayer[j][k]) {
+                        gcP.drawImage(imagewater, j * 50 + 2, k * 50 + 2, 45, 45);
+                    }
+                }
+            }
+            specific_line_text = Files.readAllLines(Paths.get(filename)).get(5);
 
-      public void cleanBoard(boolean[][] board, GraphicsContext gc) {
-          for (int i = 0; i < 10; i++) {
-              for (int k = 0; k < 10; k++) {
-                  gc.setFill(Color.WHITE);
-                  gc.fillRect(i * 50 + 2, k * 50 + 2, 45, 45);
-              }
-          }
-          for (int i = 50; i <= 500; i += 50) {
-              gc.strokeText(String.valueOf(i / 50), i, 15);
-              gc.strokeText(String.valueOf(i / 50 - 1), 3, i);
-          }
-      }
-  }
+
+            entries = specific_line_text.split(",", -1);
+
+            for (int i = 0; i < entries.length; i++) {
+                try {
+                    missboardopponent[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                } catch (NumberFormatException e) {
+                    System.out.println("");
+                }
+            }
+
+
+
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (missboardopponent[j][k]) {
+                        gcO.drawImage(imagewater, j * 50 + 2, k * 50 + 2, 45, 45);
+                    }
+                }
+            }
+
+
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+
+        } finally {
+            br.close();
+        }
+
+
+    }
+
+    public void cleanBoard(boolean[][] board, GraphicsContext gc) {
+        for (int i = 0; i < 10; i++) {
+            for (int k = 0; k < 10; k++) {
+                gc.setFill(Color.WHITE);
+                gc.fillRect(i * 50 + 2, k * 50 + 2, 45, 45);
+            }
+        }
+        for (int i = 50; i <= 500; i += 50) {
+            gc.strokeText(String.valueOf(i / 50), i, 15);
+            gc.strokeText(String.valueOf(i / 50 - 1), 3, i);
+        }
+    }
+}

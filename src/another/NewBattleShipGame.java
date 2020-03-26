@@ -88,7 +88,7 @@ public class NewBattleShipGame extends Application {
         newGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-               
+
             }
         });
 
