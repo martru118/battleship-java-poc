@@ -423,7 +423,7 @@ public class BattleShipClient2 extends Application {
         numberofturns++;
     }
 
-    public static List<String> getHighScores(String filePath) throws Exception {
+    public List<String> getHighScores(String filePath) throws Exception {
         List<String> records = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -445,7 +445,7 @@ public class BattleShipClient2 extends Application {
         }
     }
 
-    public static void writeScores(String filePath) throws Exception {
+    public void writeScores(String filePath) throws Exception {
         FileWriter writer = new FileWriter(filePath, true);
         
         try {
