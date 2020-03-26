@@ -79,10 +79,10 @@ public class BattleShipClient2 extends Application {
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
         pane.add(tf, 0, 2, 2, 1);
-        pane.add(ta, 0, 4, 2, 1);
-        pane.add(startGame, 0, 2, 2, 1);
-        pane.add(resumegame, 1, 2, 2, 1);
-        pane.add(exitGame, 0, 3, 2, 1);
+       pane.add(ta, 0, 3, 2, 1);
+       pane.add(startGame, 0, 1, 2, 1);
+       pane.add(resumegame, 1, 1, 2, 1);
+       pane.add(exitGame, 1, 2, 2, 1);
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
