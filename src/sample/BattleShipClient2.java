@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -79,21 +80,52 @@ public class BattleShipClient2 extends Application {
         Button exitGame = new Button("EXIT AND SAVE THE GAME ");
         Button resumegame = new Button("RESUME THE PREVIOUS GAME");
         Button sendScore = new Button("SEND SCORE");
+
+        //coordinates text
+        String strRowCor1 = "    0       ";
+        for(int i = 1; i<10; i++) {
+            int buf = 10 - i;
+            if(i < 5 ) {
+                strRowCor1 = strRowCor1  + "       " + i + "       ";
+            } else if(i >= 5) {
+                strRowCor1 = strRowCor1  + "       " + i + "     ";
+            }
+        }
+        Text bottomRowCor1 = new Text(strRowCor1);
+        bottomRowCor1.setStyle("-fx-font-weight: bold");
+
+        String strRowCor2 = "    0       ";
+        for(int i = 1; i<10; i++) {
+            int buf = 10 - i;
+            if(i < 5 ) {
+                strRowCor2 = strRowCor2  + "       " + i + "       ";
+            } else if(i >= 5) {
+                strRowCor2 = strRowCor2  + "       " + i + "     ";
+            }
+        }
+        Text bottomRowCor2 = new Text(strRowCor2);
+        bottomRowCor2.setStyle("-fx-font-weight: bold");
+
+
         // tf.setPromptText("Enter Name");
         // tf.setMaxWidth(500);
         //ta.setEditable(false);
         tf.setAlignment(Pos.CENTER_LEFT);
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
-<<<<<<< HEAD
-        pane.add(tf, 0, 2, 2, 1);
-=======
-        pane.add(sendScore, 0, 2, 2, 1);
->>>>>>> 85bbd45a4105668bb13c008c42d914bb411b4795
-        pane.add(ta, 0, 3, 2, 1);
-        pane.add(startGame, 0, 1, 2, 1);
-        pane.add(resumegame, 1, 1, 2, 1);
-        pane.add(exitGame, 1, 2, 2, 1);
+
+        pane.add(tf, 0, 3, 2, 1);
+
+        pane.add(sendScore, 0, 3, 2, 1);
+
+        pane.add(ta, 0, 4, 2, 1);
+        pane.add(startGame, 0, 2, 2, 1);
+        pane.add(resumegame, 1, 2, 2, 1);
+        pane.add(exitGame, 1, 3, 2, 1);
+
+        pane.add(bottomRowCor1,0,1,1,1);
+        pane.add(bottomRowCor2,1,1,1,1);
+
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
@@ -110,13 +142,13 @@ public class BattleShipClient2 extends Application {
             gcP.strokeLine(i, 0, i, 500);
             gcP.strokeLine(0, i, 500, i);
 
-            gcP.strokeText(String.valueOf(i / 50), i, 15);
+            //gcP.strokeText(String.valueOf(i / 50), i, 15);
             gcP.strokeText(String.valueOf(i / 50 - 1), 3, i);
 
             gcO.strokeLine(i, 0, i, 500);
             gcO.strokeLine(0, i, 500, i);
 
-            gcO.strokeText(String.valueOf(i / 50), i, 15);
+            //gcO.strokeText(String.valueOf(i / 50), i, 15);
             gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);
         }
 
@@ -642,7 +674,7 @@ public class BattleShipClient2 extends Application {
 
     }
 
-<<<<<<< HEAD
+
     public void cleanBoard(boolean[][] board, GraphicsContext gc) {
         for (int i = 0; i < 10; i++) {
             for (int k = 0; k < 10; k++) {
@@ -656,6 +688,4 @@ public class BattleShipClient2 extends Application {
         }
     }
 }
-=======
-}
->>>>>>> 85bbd45a4105668bb13c008c42d914bb411b4795
+
