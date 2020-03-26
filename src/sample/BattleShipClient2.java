@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -89,8 +90,8 @@ public class BattleShipClient2 extends Application {
         stage.show();
 
         //set boards
-        AIboard();
-        playerBoard();
+        setBoard(playerBoard);
+        setBoard(opponentBoard);
 
         //draw grid
         pane.setMinHeight(600);
@@ -325,38 +326,6 @@ public class BattleShipClient2 extends Application {
         }
     }
 
-    public void AIboard () {
-        for (int i = 0; i < ships.length; i++) {
-            Random r = new Random();
-
-            int[][] c = new int[ships[i].getSpaces()][2];
-            c[0][0] = r.nextInt(10); //number from 0-9
-            c[0][1] = r.nextInt(10);
-
-            //50% chance of ships being placed vertically or horizontally
-            if (r.nextInt() % 2 ==0){
-                //horizontal placement
-                for (int j = 1; j < c.length; j++) {
-                    c[j][0] = c[j-1][0] + 1;
-                    c[j][1] = c[j-1][1];
-                }
-            } else {
-                //vertical placement
-                for (int j = 1; j < c.length; j++) {
-                    c[j][0] = c[j-1][0];
-                    c[j][1] = c[j-1][1] + 1;
-                }
-            }
-
-            //check if position is valid
-            if (isValid(ships[i], c, opponentBoard)) {
-                placeShips(ships[i], opponentBoard, c);
-                ships[i].setCoordinates(c);
-            } else {
-                i--;
-            }
-        }
-    }
 
     public boolean isHit ( int[] coordinate, boolean[][] board){
         if (board[coordinate[0]][coordinate[1]]) {
@@ -384,7 +353,7 @@ public class BattleShipClient2 extends Application {
         return true;
     }
 
-    public void playerBoard () {
+    public void setBoard(boolean[][] board) {
         for (int i = 0; i < ships.length; i++) {
             Random r = new Random();
 
@@ -408,8 +377,8 @@ public class BattleShipClient2 extends Application {
             }
 
             //check if position is valid
-            if (isValid(ships[i], c, playerBoard)) {
-                placeShips(ships[i], playerBoard, c);
+            if (isValid(ships[i], c, board)) {
+                placeShips(ships[i], board, c);
                 ships[i].setCoordinates(c);
             } else {
                 i--;
@@ -449,7 +418,7 @@ public class BattleShipClient2 extends Application {
         FileWriter writer = new FileWriter(filePath, true);
         
         try {
-            writer.append(playerscore + '\n');
+            writer.append((char) (playerscore + '\n'));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
