@@ -423,49 +423,33 @@ public class BattleShipClient2 extends Application {
         playerTurn = !playerTurn;
     }
 
-    //https://www.baeldung.com/java-csv-file-array
-    public List<List<String>> getHighScores(String filePath) throws Exception {
-        List<List<String>> records = new ArrayList<>();
+    public List<String> getHighScores(String filePath) throws Exception {
+        List<String> records = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            reader.readLine();  //skip header line
 
             //read contents of file
             while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                records.add(Arrays.asList(values));
+                records.add(line);
             }
 
             //sort array
-            Collections.sort(records, new Comparator<List<String>> () {
+            Collections.sort(records, new Comparator<String> () {
                 @Override
-                public int compare(List<String> current, List<String> other) {
-                    if (Integer.parseInt(current.get(1)) > Integer.parseInt(other.get(1)))
-                        return -1;
-                    else
-                        return 1;
+                public int compare(String current, String other) {
+                    return Integer.valueOf(current).compareTo(Integer.valueOf(other));
                 }
             });
             return records;
         }
     }
 
-    //https://examples.javacodegeeks.com/core-java/writeread-csv-files-in-java-example/
     public void writeScores(String filePath) throws Exception {
-        Score newScore;     //generate new score
-
-        //check who won
-        if (getPlayerturn())
-            newScore = new Score("Player", playerscore);
-        else
-            newScore = new Score("Computer", opponentscore);
-
-        //write to file
-        FileWriter writer = new FileWriter(filePath);
+        FileWriter writer = new FileWriter(filePath, true);
+        
         try {
-            writer.append("player,score\n");
-            writer.append(newScore.toString());
+            writer.append(playerscore + '\n');
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
