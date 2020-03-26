@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -23,75 +24,81 @@ import java.util.*;
 public class BattleShipClient2 extends Application {
     private TextArea ta = new TextArea();
     private TextField tf = new TextField();
-    private final String path = "src/scores.csv";
+    private final String path = "scores.csv";
 
     //boards
-    private boolean[][] playerBoard = new boolean[10][10];
-    private boolean[][] opponentBoard = new boolean[10][10];
+    private Board playerBoard= new Board();
+    private Board opponentBoard = new Board();
     //to keep track of the grids which have been discovered
-    private boolean[][] disclosedboardPlayer=new boolean[10][10];
-    private boolean [][] disclosedboardopponent=new boolean[10][10];
+    private Board disclosedboardPlayer = new Board();
+    private Board disclosedboardopponent = new Board();
     //position what have been hit
-    private boolean[][] hitboardPlayer=new boolean[10][10];
-    private boolean [][] hitboardopponent=new boolean[10][10];
+    private Board hitboardPlayer = new Board();
+    private Board hitboardopponent = new Board();
     //position what have been missed
-    private boolean[][] missboardPlayer=new boolean[10][10];
-    private boolean [][] missboardopponent=new boolean[10][10];
+    private Board missboardPlayer = new Board();
+    private Board missboardopponent = new Board();
     //to take the coordinates from the user and the opponent and initialising it to something invalid.
-    int[] coordinate={10,10};
+    int[] coordinate = {10, 10};
     //to make sure what input length is put by the user.
-    int inputlength=0;
-    String userinput="";
+    int inputlength = 0;
+    String userinput = "";
+    public int numberofturns;
     public int playerscore;
-    public int opponentscore;
 
     //game saving
-    String filename="current game.txt";
+    String filename = "current game.txt";
     //io streams
     private DataOutputStream toServer = null;
     private DataInputStream fromServer = null;
 
     //create board graphics
     private GridPane pane = new GridPane();
-    private Canvas playerCanvas = new Canvas(500,500);
-    private Canvas opponentCanvas = new Canvas(500,500);
+    private Canvas playerCanvas = new Canvas(500, 500);
+    private Canvas opponentCanvas = new Canvas(500, 500);
     private GraphicsContext gcP = playerCanvas.getGraphicsContext2D();
     private GraphicsContext gcO = opponentCanvas.getGraphicsContext2D();
 
     //create ships
-    private Ship destroyer = new Ship(4,"Destroyer");
-    private Ship battleship = new Ship(3,"Battleship");
-    private Ship patrol = new Ship(2,"Patrol");
-    private Ship submarine = new Ship(3,"Submarine");
-    private Ship carrier = new Ship(5,"Carrier");
+    private Ship destroyer = new Ship(4, "Destroyer");
+    private Ship battleship = new Ship(3, "Battleship");
+    private Ship patrol = new Ship(2, "Patrol");
+    private Ship submarine = new Ship(3, "Submarine");
+    private Ship carrier = new Ship(5, "Carrier");
     private final Ship[] ships = {destroyer, battleship, patrol, submarine, carrier};
     private boolean playerTurn = true;
+
     @Override
     public void start(Stage stage) throws Exception {
 
         //set stage
+        TextArea ta = new TextArea();
+        TextField tf = new TextField();
+
         Button startGame = new Button("START THE GAME");
-        Button exitGame = new Button("EXIT THE GAME");
+        Button exitGame = new Button("EXIT AND SAVE THE GAME ");
         Button resumegame = new Button("RESUME THE PREVIOUS GAME");
-        tf.setPromptText("Enter Name");
-        tf.setMaxWidth(500);
-        ta.setEditable(false);
+        Button sendScore = new Button("SEND SCORE");
+        // tf.setPromptText("Enter Name");
+        // tf.setMaxWidth(500);
+        //ta.setEditable(false);
         tf.setAlignment(Pos.CENTER_LEFT);
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
-        pane.add(tf, 0, 2, 2, 1);
-       pane.add(ta, 0, 3, 2, 1);
-       pane.add(startGame, 0, 1, 2, 1);
-       pane.add(resumegame, 1, 1, 2, 1);
-       pane.add(exitGame, 1, 2, 2, 1);
+        pane.add(sendScore, 0, 2, 2, 1);
+        pane.add(ta, 0, 3, 2, 1);
+        pane.add(startGame, 0, 1, 2, 1);
+        pane.add(resumegame, 1, 1, 2, 1);
+        pane.add(exitGame, 1, 2, 2, 1);
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
         stage.show();
 
         //set boards
-        setBoard(playerBoard);
         setBoard(opponentBoard);
+        setBoard(playerBoard);
+
 
         //draw grid
         pane.setMinHeight(600);
@@ -111,7 +118,6 @@ public class BattleShipClient2 extends Application {
 
 
         //play game
-
         resumegame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -124,15 +130,16 @@ public class BattleShipClient2 extends Application {
             }
         });
 
+
         startGame.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 
             @Override
             public void handle(ActionEvent actionEvent) {
                 while (true) {
-                    Image imagewater=new Image("/sample/water.jpg");
-                    Image imagefire=new Image("/sample/fire.PNG");
-                    String fire="fire.mp3";
-                    String water="water.mp3";
+                    Image imagewater = new Image("/sample/water.jpg");
+                    Image imagefire = new Image("/sample/fire.PNG");
+                    String fire = "fire.mp3";
+                    String water = "water.mp3";
                     Media soundfire = new Media(new File(fire).toURI().toString());
                     MediaPlayer mediafire = new MediaPlayer(soundfire);
                     //mediafire.play();
@@ -145,7 +152,12 @@ public class BattleShipClient2 extends Application {
                     cancel.addEventFilter(ActionEvent.ACTION, event ->
                             tid.showAndWait()
                     );
-
+                    //mediawater.play();
+                    //userinput=tf.getText();
+                    //coordinate[0] = Character.getNumericValue(userinput.charAt(0));
+                    //coordinate[1] = Character.getNumericValue(userinput.charAt(1));
+                    //coordinate = convertToInt(tf.getText());
+                    // inputlength=userinput.length();
                     //player turn
                     if (getPlayerturn()) {
 
@@ -154,8 +166,9 @@ public class BattleShipClient2 extends Application {
                     if (!newValue.matches("\\d{0,1}([\\,]\\d{0,1})?"))
                         tid.getEditor().setText(oldValue);
                 });
+
                  */
-                        while (!isValidMove(coordinate, disclosedboardopponent) || inputlength != 2) {
+                        while (!isValidMove(coordinate,disclosedboardopponent.getBoard()) || inputlength != 2) {
                             Optional<String> c = tid.showAndWait();
 
                             c.ifPresent(coordinates -> {
@@ -166,25 +179,24 @@ public class BattleShipClient2 extends Application {
 
 
 
-                        if (isHit(coordinate, opponentBoard)) {
+                        if (opponentBoard.isHit(coordinate)) {
 
                             //gcO.setFill(Color.RED);
-                            gcO.drawImage(imagefire,coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
+                            gcO.drawImage(imagefire, coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
                             mediafire.play();
-                            playerscore = playerscore + 25;
-                            opponentscore = opponentscore - 25;
-                            hitboardopponent[coordinate[0]][coordinate[1]]=true;
-                            ta.appendText("You have Hit opponent.\n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
+
+                            hitboardopponent.getBoard()[coordinate[0]][coordinate[1]] = true;
+                            ta.appendText("You have Hit opponent.\n");
 
                         } else {
-                            missboardopponent[coordinate[0]][coordinate[1]]=true;
-                            ta.appendText("You have missed. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
+                            missboardopponent.getBoard()[coordinate[0]][coordinate[1]] = true;
+                            ta.appendText("You have missed. \n" );
                             //gcO.setFill(Color.BLACK);
                             mediawater.play();
-                            gcO.drawImage(imagewater,coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
+                            gcO.drawImage(imagewater, coordinate[0] * 50 + 2, coordinate[1] * 50 + 2, 45, 45);
 
                         }
-                        disclosedboardopponent[coordinate[0]][coordinate[1]] = true;
+                        disclosedboardopponent.getBoard()[coordinate[0]][coordinate[1]] = true;
                         //isValidMove()
 
 
@@ -212,42 +224,44 @@ public class BattleShipClient2 extends Application {
                         int[] coordinate2 = new int[2];
                         coordinate2[0] = r.nextInt(10);
                         coordinate2[1] = r.nextInt(10);
-                        while(!isValidMove(coordinate2,disclosedboardPlayer)) {
+                        while (!isValidMove(coordinate2,disclosedboardPlayer.getBoard())) {
 
                             coordinate2[0] = r.nextInt(10);
                             coordinate2[1] = r.nextInt(10);
                         }
-                        if (isHit(coordinate2, playerBoard)) {
+                        if (playerBoard.isHit(coordinate2)) {
 
                             //gcP.setFill(Color.RED);
-                            playerscore = playerscore - 25;
-                            opponentscore = opponentscore + 25;
-                            hitboardPlayer[coordinate2[0]][coordinate2[1]] = true;
-                            gcP.drawImage(imagefire,coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
-                            mediafire.play();
-                            ta.appendText("You have been HIT! \n " + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
+                            //playerscore = playerscore - 25;
+                            // opponentscore = opponentscore + 25;
+                            hitboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
+                            gcP.drawImage(imagefire, coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
+                            //mediafire.play();
+                            ta.appendText("You have been HIT! \n ");
 
                         } else {
-                            ta.appendText("Opponent has missed. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore+"\n");
+                            ta.appendText("Opponent has missed. \n" );
                             gcP.setFill(Color.BLACK);
-                            mediawater.play();
-                            gcP.drawImage(imagewater,coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
-                            missboardPlayer[coordinate2[0]][coordinate2[1]] = true;
+                            //mediawater.play();
+                            gcP.drawImage(imagewater, coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
+                            missboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
 
                         }
                         //gcP.fillOval(coordinate2[0] * 50 + 20, coordinate2[1] * 50 + 20, 10, 10);
-                        disclosedboardPlayer[coordinate2[0]][coordinate2[1]] = true;
+                        disclosedboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
 
                         changeTurn();
                     }
 
 
                     //check who has lost
-                    if (hasLost(opponentBoard)) {
-                        ta.appendText("You have won! \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore + "\n");
+                    if (opponentBoard.hasLost()) {
+                        ta.appendText("You have won! \n");
+                        playerscore=numberofturns*50;
                         break;
-                    } else if (hasLost(playerBoard)) {
-                        ta.appendText("You have lost. \n" + "Your score is " + playerscore + ".Opponent's score is " + opponentscore + "\n");
+                    } else if (playerBoard.hasLost()) {
+                        playerscore=0;
+                        ta.appendText("You have lost. \n" );
                         break;
                     }
 
@@ -260,100 +274,71 @@ public class BattleShipClient2 extends Application {
             public void handle(ActionEvent event) {
                 try {
                     save();
-                    load();
+
                 } catch (Exception e) {
-                    e.printStackTrace();}
+                    e.printStackTrace();
+                }
                 System.exit(0);
             }
         });
-    }
-        /*connect to server
+        sendScore.setOnAction(e->{
+            try{
+                System.out.println(playerscore);//REMOVE
+                toServer.writeInt(playerscore);
+                toServer.flush();
+                //String highscores=fromServer.readUTF();
+                String name=fromServer.readUTF();
+                ta.appendText(" "+playerscore);
+                ta.appendText(name);
+                //ta.appendText(highscores);
+            }
+            catch(IOException ex){
+                System.err.println(ex);
+            }});
+
         try {
-            Socket socket = new Socket("localhost",8000);
+            Socket socket = new Socket("localhost", 1490);
+
             //create an input stream to send data to the server
             fromServer = new DataInputStream(socket.getInputStream());
+
             //create an output stream to send data to the server
             toServer = new DataOutputStream(socket.getOutputStream());
+
         } catch (IOException e) {
             e.printStackTrace();
-        }   */
-
+        }
+    }
     // user enters a coordinates to fire
 
 
-
-    public boolean isValidMove ( int[] coordinate, boolean[][] discloseboard){
-        if (coordinate[1] > 9||coordinate[0]>9){
+    public boolean isValidMove(int[] coordinate, boolean[][] discloseboard) {
+        if (coordinate[1] > 9 || coordinate[0] > 9) {
             //ta.appendText("Please Type a different coordinate.This coordinate is out of board");
-            return false;}
-        else if(discloseboard[coordinate[0]][coordinate[1]]){
+            return false;
+        } else if (discloseboard[coordinate[0]][coordinate[1]]) {
             //ta.appendText("Please Type a different coordinate.This grid is already discovered");
-            return false;}
-
-        return true;
-    }
-    //returns true if ship is able to be placed on board
-    public boolean isValid (Ship ship,int[] coordinate, boolean[][] board){
-
-        if(coordinate[0] > 9 || coordinate[1] > 9){
-            return false;
-        }
-        //if the space is occupied
-        if (board[coordinate[0]][coordinate[1]]){
             return false;
         }
 
         return true;
     }
 
-    public boolean isValid (Ship ship,int[][] coordinates, boolean[][] board){
-        for (int[] coord : coordinates) {
-            if (!isValid(ship, coord, board))
-                return false;
-        }
-        return true;
-    }
-
-    public void placeShips (Ship ship,boolean[][] board, int[][] coordinate){
+    public void placeShips(boolean[][] board, int[][] coordinate) {
         for (int[] coords : coordinate) {
             board[coords[0]][coords[1]] = true;
-            Image imageship=new Image("/sample/ship.PNG");
-            if (board == playerBoard) {
-                gcP.setFill(Color.AQUA);
+            Image imageship = new Image("/sample/ship.PNG");
+            if (board == playerBoard.getBoard()) {
+                //gcP.setFill(Color.AQUA);
                 //gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
-                gcP.drawImage(imageship,coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
+                gcP.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
+            } else {
+                //REMOVE LATER
+                gcO.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
             }
         }
     }
-
-
-    public boolean isHit ( int[] coordinate, boolean[][] board){
-        if (board[coordinate[0]][coordinate[1]]) {
-            board[coordinate[0]][coordinate[1]] = false;
-            return true;
-        }
-        return false;
-    }
-
-    public int[] convertToInt (String s){
-        int[] coordinates = new int[2];
-        coordinates[0] = Character.getNumericValue(s.charAt(0));
-        coordinates[1] = Character.getNumericValue(s.charAt(1));
-        return coordinates;
-    }
-
-    public boolean hasLost ( boolean[][] board){
-        for (boolean[] coords : board) {
-            for (int j = 0; j < board.length; j++) {
-                if (coords[j])
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
-    public void setBoard(boolean[][] board) {
+    public void setBoard(Board board) {
         for (int i = 0; i < ships.length; i++) {
             Random r = new Random();
 
@@ -377,48 +362,63 @@ public class BattleShipClient2 extends Application {
             }
 
             //check if position is valid
-            if (isValid(ships[i], c, board)) {
-                placeShips(ships[i], board, c);
+            if (board.isValid(c)) {
+                placeShips(board.getBoard(), c);
                 ships[i].setCoordinates(c);
             } else {
                 i--;
             }
         }
     }
-    public boolean getPlayerturn () {
-        return playerTurn;
-    }
-    public void changeTurn () {
-        playerTurn = !playerTurn;
+
+
+    public int[] convertToInt(String s) {
+        int[] coordinates = new int[2];
+        coordinates[0] = Character.getNumericValue(s.charAt(0));
+        coordinates[1] = Character.getNumericValue(s.charAt(1));
+        return coordinates;
     }
 
-    public List<String> getHighScores(String filePath) throws Exception {
-        List<String> records = new ArrayList<>();
+    public boolean getPlayerturn() {
+        return playerTurn;
+    }
+
+    public void changeTurn() {
+        playerTurn = !playerTurn;
+        numberofturns++;
+    }
+
+    //https://www.baeldung.com/java-csv-file-array
+  /*  public List<List<String>> getHighScores(String filePath) throws Exception {
+        List<List<String>> records = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
 
             //read contents of file
             while ((line = reader.readLine()) != null) {
-                records.add(line);
+                String[] values = line.split(",");
+                records.add(Arrays.asList(values));
             }
 
-            //sort array
-            Collections.sort(records, new Comparator<String> () {
-                @Override
-                public int compare(String current, String other) {
-                    return Integer.valueOf(current).compareTo(Integer.valueOf(other));
-                }
-            });
+            Collections.sort(records.get(1));
             return records;
         }
-    }
+    }*/
 
-    public void writeScores(String filePath) throws Exception {
-        FileWriter writer = new FileWriter(filePath, true);
-        
+    //https://examples.javacodegeeks.com/core-java/writeread-csv-files-in-java-example/
+  /*  public void writeScores(String filePath) throws Exception {
+        Score newScore;     //generate new score
+
+        //check who won
+        if (getPlayerturn())
+            newScore = new Score("Player", playerscore);
+
+
+        //write to file
+        FileWriter writer = new FileWriter(filePath);
         try {
-            writer.append((char) (playerscore + '\n'));
+            writer.append(newScore.toString());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -430,63 +430,64 @@ public class BattleShipClient2 extends Application {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     public void save() throws Exception {
-        Writer writer=null;
-        String state_of_board="";
-        try{
+        Writer writer = null;
+        String state_of_board = "";
+        try {
             //different line in the file different board.
-            writer=new BufferedWriter(new FileWriter(filename));
-            for(int i=0;i<10;i++){
-                for(int j=0;j<10;j++){
-                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(playerBoard[i][j]+",");
+            writer = new BufferedWriter(new FileWriter(filename));
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    state_of_board = i + "," + j + "," + playerBoard.getBoard()[i][j] + ",";
                     writer.write(state_of_board);
                 }
             }
             writer.write("\n");
-            for(int i=0;i<10;i++){
-                for(int j=0;j<10;j++){
-                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(opponentBoard[i][j]+",");
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    state_of_board = String.valueOf(i) + "," + String.valueOf(j) + "," + String.valueOf(opponentBoard.getBoard()[i][j] + ",");
                     writer.write(state_of_board);
                 }
             }
             writer.write("\n");
-            for(int i=0;i<10;i++){
-                for(int j=0;j<10;j++){
-                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(hitboardPlayer[i][j]+",");
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    state_of_board = String.valueOf(i) + "," + String.valueOf(j) + "," + String.valueOf(hitboardPlayer.getBoard()[i][j] + ",");
                     writer.write(state_of_board);
                 }
             }
             writer.write("\n");
-            for(int i=0;i<10;i++){
-                for(int j=0;j<10;j++){
-                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(hitboardopponent[i][j]+",");
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    state_of_board = String.valueOf(i) + "," + String.valueOf(j) + "," + String.valueOf(hitboardopponent.getBoard()[i][j] + ",");
                     writer.write(state_of_board);
                 }
             }
             writer.write("\n");
-            for(int i=0;i<10;i++){
-                for(int j=0;j<10;j++){
-                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(missboardPlayer[i][j]+",");
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    state_of_board = String.valueOf(i) + "," + String.valueOf(j) + "," + String.valueOf(missboardPlayer.getBoard()[i][j] + ",");
                     writer.write(state_of_board);
                 }
             }
             writer.write("\n");
-            for(int i=0;i<10;i++){
-                for(int j=0;j<10;j++){
-                    state_of_board=String.valueOf(i)+","+String.valueOf(j)+","+String.valueOf(missboardopponent[i][j]+",");
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    state_of_board = String.valueOf(i) + "," + String.valueOf(j) + "," + String.valueOf(missboardopponent.getBoard()[i][j] + ",");
                     writer.write(state_of_board);
                 }
             }
             writer.write("\n");
         } catch (Exception e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             writer.flush();
             writer.close();
         }
     }
+
     public void load() throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filename));
 
@@ -502,17 +503,17 @@ public class BattleShipClient2 extends Application {
             //loading the player board
             for (int i = 0; i < entries.length; i++) {
                 try {
-                    playerBoard[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                    playerBoard.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("");
+                    System.out.println("jbj");
                 }
             }
             Image imageship = new Image("/sample/ship.PNG");
 
-            cleanBoard(playerBoard,gcP);
+            playerBoard.cleanBoard(gcP);
             for (int j = 0; j < 10; j++) {
                 for (int k = 0; k < 10; k++) {
-                    if (playerBoard[j][k]) {
+                    if (playerBoard.getBoard()[j][k]) {
                         gcP.drawImage(imageship, j * 50 + 2, k * 50 + 2, 45, 45);
                     }
                 }
@@ -522,12 +523,12 @@ public class BattleShipClient2 extends Application {
 
 
             entries = specific_line_text.split(",", -1);
-            cleanBoard(opponentBoard,gcO);
+            opponentBoard.cleanBoard(gcO);
             for (int i = 0; i < entries.length; i++) {
                 try {
-                    opponentBoard[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                    opponentBoard.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("");
+                    System.out.println("jbj");
                 }
             }
             //loading the hit board for player
@@ -538,7 +539,7 @@ public class BattleShipClient2 extends Application {
 
             for (int i = 0; i < entries.length; i++) {
                 try {
-                    hitboardPlayer[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                    hitboardPlayer.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
                     System.out.println("jbj");
                 }
@@ -548,7 +549,7 @@ public class BattleShipClient2 extends Application {
 
             for (int j = 0; j < 10; j++) {
                 for (int k = 0; k < 10; k++) {
-                    if (hitboardPlayer[j][k]) {
+                    if (hitboardPlayer.getBoard()[j][k]) {
                         gcP.drawImage(imagefire, j * 50 + 2, k * 50 + 2, 45, 45);
                     }
                 }
@@ -560,7 +561,7 @@ public class BattleShipClient2 extends Application {
 
             for (int i = 0; i < entries.length; i++) {
                 try {
-                    hitboardopponent[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                    hitboardopponent.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
                     System.out.println("jbj");
                 }
@@ -570,7 +571,7 @@ public class BattleShipClient2 extends Application {
             //cleanBoard(playerBoard,gcP);
             for (int j = 0; j < 10; j++) {
                 for (int k = 0; k < 10; k++) {
-                    if (hitboardopponent[j][k]) {
+                    if (hitboardopponent.getBoard()[j][k]) {
                         gcO.drawImage(imagefire, j * 50 + 2, k * 50 + 2, 45, 45);
                     }
                 }
@@ -582,9 +583,9 @@ public class BattleShipClient2 extends Application {
 
             for (int i = 0; i < entries.length; i++) {
                 try {
-                    missboardPlayer[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                    missboardPlayer.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("");
+                    System.out.println("jbj");
                 }
             }
             Image imagewater = new Image("/sample/water.jpg");
@@ -592,7 +593,7 @@ public class BattleShipClient2 extends Application {
 
             for (int j = 0; j < 10; j++) {
                 for (int k = 0; k < 10; k++) {
-                    if (missboardPlayer[j][k]) {
+                    if (missboardPlayer.getBoard()[j][k]) {
                         gcP.drawImage(imagewater, j * 50 + 2, k * 50 + 2, 45, 45);
                     }
                 }
@@ -604,9 +605,9 @@ public class BattleShipClient2 extends Application {
 
             for (int i = 0; i < entries.length; i++) {
                 try {
-                    missboardopponent[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
+                    missboardopponent.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("");
+                    System.out.println("jbj");
                 }
             }
 
@@ -614,7 +615,7 @@ public class BattleShipClient2 extends Application {
 
             for (int j = 0; j < 10; j++) {
                 for (int k = 0; k < 10; k++) {
-                    if (missboardopponent[j][k]) {
+                    if (missboardopponent.getBoard()[j][k]) {
                         gcO.drawImage(imagewater, j * 50 + 2, k * 50 + 2, 45, 45);
                     }
                 }
@@ -631,16 +632,4 @@ public class BattleShipClient2 extends Application {
 
     }
 
-    public void cleanBoard(boolean[][] board, GraphicsContext gc) {
-        for (int i = 0; i < 10; i++) {
-            for (int k = 0; k < 10; k++) {
-                gc.setFill(Color.WHITE);
-                gc.fillRect(i * 50 + 2, k * 50 + 2, 45, 45);
-            }
-        }
-        for (int i = 50; i <= 500; i += 50) {
-            gc.strokeText(String.valueOf(i / 50), i, 15);
-            gc.strokeText(String.valueOf(i / 50 - 1), 3, i);
-        }
-    }
 }
