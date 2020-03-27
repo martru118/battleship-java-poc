@@ -33,3 +33,4 @@ Instructions for Battle Ship:
 6.If you win you will get a score, which is how many turns you took (the lower the score the better)
 7.You can then enter your name into the text field with the "Enter Name" and then press the "SEND SCORE" button to send your score to     the server, which will then store the score in the "scores.csv" file
 8.The game will then display to you the lowest score so far recorded (lower the better = took less turns to win)
+9.there is a clock going on in the background when the game starts
