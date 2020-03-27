@@ -231,6 +231,11 @@ public class BattleShipClient2 extends Application {
 
                         }
                         disclosedboardopponent.getBoard()[coordinate[0]][coordinate[1]] = true;
+                        // draw columns numbers again over to keep the visible
+                        for (int i = 50; i <= 500; i += 50) {
+                            //gcO.strokeText(String.valueOf(i / 50), i, 15);
+                            gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);
+                        }
                         changeTurn();
                     } else {
                         //computer turn
