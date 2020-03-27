@@ -130,6 +130,7 @@ public class BattleShipClient2 extends Application {
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
         stage.setMaximized(true);
+        stage.setResizable(false);
         stage.show();
 
         //set boards
@@ -173,10 +174,10 @@ public class BattleShipClient2 extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 while (true) {
-                    Image imagewater = new Image("/sample/water.jpg");
-                    Image imagefire = new Image("/sample/fire.PNG");
-                    String fire = "fire.mp3";
-                    String water = "water.mp3";
+                    Image imagewater = new Image("images\\water.jpg");
+                    Image imagefire = new Image("images\\fire.PNG");
+                    String fire = "src\\sample\\fire.mp3";
+                    String water = "src\\sample\\water.mp3";
                     Media soundfire = new Media(new File(fire).toURI().toString());
                     MediaPlayer mediafire = new MediaPlayer(soundfire);
                     //mediafire.play();
@@ -307,7 +308,7 @@ public class BattleShipClient2 extends Application {
             }});
 
         try {
-            Socket socket = new Socket("localhost", 1490);
+            Socket socket = new Socket("localhost", 8000);
 
             //create an input stream to send data to the server
             fromServer = new DataInputStream(socket.getInputStream());
@@ -335,7 +336,7 @@ public class BattleShipClient2 extends Application {
     public void placeShips(boolean[][] board, int[][] coordinate) {
         for (int[] coords : coordinate) {
             board[coords[0]][coords[1]] = true;
-            Image imageship = new Image("/sample/ship.PNG");
+            Image imageship = new Image("images/ship.PNG");
             if (board == playerBoard.getBoard()) {
                 gcP.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
             } else {
