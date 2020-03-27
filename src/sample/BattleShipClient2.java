@@ -380,43 +380,6 @@ public class BattleShipClient2 extends Application {
         numberofturns++;
     }
 
-    public List<String> getHighScores(String filePath) throws Exception {
-        List<String> records = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-
-            //read contents of file
-            while ((line = reader.readLine()) != null) {
-                records.add(line);
-            }
-
-            //sort array
-            Collections.sort(records, new Comparator<String> () {
-                @Override
-                public int compare(String current, String other) {
-                    return Integer.valueOf(current).compareTo(Integer.valueOf(other));
-                }
-            });
-            return records;
-        }
-    }
-
-    public void writeScores(String filePath) throws Exception {
-        FileWriter writer = new FileWriter(filePath, true);
-        
-        try {
-            //write to score to file
-            writer.append(playerscore + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            //close filewriter
-            writer.flush();
-            writer.close();
-        }
-    }
-
     public void save() throws Exception {
         Writer writer = null;
         String state_of_board = "";
