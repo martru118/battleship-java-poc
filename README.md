@@ -1,10 +1,10 @@
 # CSCI_2020U_Final_Project
 
-Yong-Joon Baek, Cheyenne Carrier, Annanya Saha, Martin Troung, Michael Loo
+Yong-Joon Baek, Cheyenne Carrier, Anannya Saha, Martin Troung, Michael Loo
 Yong-Joon,CheyenneC-ontechu,anannyasaha,100708410-uoit,Michael-Loo-2000
 
 ## Contributions:
-Gamplay: Cheyenne, Yong-Joon, Michael
+Gamplay: Cheyenne, Yong-Joon, Michael, Anannya
 File input and output: Annanya, Martin,Cheyenne
 Gradle: Yong-Joon
 Multithreading: Yong-Joon
