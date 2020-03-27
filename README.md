@@ -6,7 +6,7 @@
 3.
 
 ## Contributions
-* __Gameplay:__ Cheyenne, YongJoon, Michael
+* __Gameplay:__ Cheyenne, YongJoon, Michael, Annanya
 * __Build Tools (Gradle)__: YongJoon
 * __File I/O__: Martin, Annanya
 * __Multi-threading__: YongJoon
