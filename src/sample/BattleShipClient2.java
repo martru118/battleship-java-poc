@@ -150,7 +150,7 @@ public class BattleShipClient2 extends Application {
             gcO.strokeLine(0, i, 500, i);
 
             //gcO.strokeText(String.valueOf(i / 50), i, 15);
-            gcO.strokeText(String.valueOf(i / 50 - 1), -1, i);
+            gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);;
         }
 
 
