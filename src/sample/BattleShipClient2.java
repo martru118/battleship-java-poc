@@ -43,7 +43,6 @@ public class BattleShipClient2 extends Application {
     int[] coordinate = {10, 10};
     //to make sure what input length is put by the user.
     int inputlength = 0;
-    String userinput = "";
     public int numberofturns;
     public int playerscore;
 
@@ -234,25 +233,6 @@ public class BattleShipClient2 extends Application {
 
                         }
                         disclosedboardopponent.getBoard()[coordinate[0]][coordinate[1]] = true;
-                        //isValidMove()
-
-
-
-                /*
-                f.setOnAction(e -> {
-                    int[] coordinate = convertToInt(tf.getText());
-                     if (isHit(coordinate, opponentBoard)) {
-                        ta.setText("You have hit opponent! \n");
-                        gcO.setFill(Color.RED);
-                    } else {
-                        ta.setText("You have missed. \n");
-                        gcO.setFill(Color.BLACK);
-                    }
-                    gcO.fillOval(coordinate[0] * 50 + 20, coordinate[1] * 50 + 20, 10,10);
-                    tf.setText("");
-                });
-                */
-
                         changeTurn();
                     } else {
                         //computer turn
@@ -294,6 +274,7 @@ public class BattleShipClient2 extends Application {
                     //check who has lost
                     if (opponentBoard.hasLost()) {
                         ta.appendText("You have won! \n");
+                        ta.appendText("Enter username in textfield and click 'send score'\n");
                         playerscore=numberofturns*50;
                         break;
                     } else if (playerBoard.hasLost()) {
@@ -320,13 +301,14 @@ public class BattleShipClient2 extends Application {
         });
         sendScore.setOnAction(e->{
             try{
-                System.out.println(playerscore);//REMOVE
                 toServer.writeInt(playerscore);
                 toServer.flush();
-                //String highscores=fromServer.readUTF();
-                String name=fromServer.readUTF();
-                ta.appendText(" "+playerscore);
-                ta.appendText(name);
+                String name=tf.getText();
+                toServer.writeUTF(name);
+                toServer.flush();
+
+                ta.appendText(name+": "+playerscore);
+                //String high scores = fromServer.readUTF();
                 //ta.appendText(highscores);
             }
             catch(IOException ex){
@@ -346,8 +328,6 @@ public class BattleShipClient2 extends Application {
             e.printStackTrace();
         }
     }
-    // user enters a coordinates to fire
-
 
     public boolean isValidMove(int[] coordinate, boolean[][] discloseboard) {
         if (coordinate[1] > 9 || coordinate[0] > 9) {

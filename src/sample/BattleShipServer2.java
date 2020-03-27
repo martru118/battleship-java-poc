@@ -35,7 +35,6 @@ public class BattleShipServer2 extends Application  {
     }
 
     String info="";
-    TextField textforname = new TextField("ENTER NAME");
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -49,9 +48,7 @@ public class BattleShipServer2 extends Application  {
         ScrollPane sp=new ScrollPane(ta);
         GridPane gridPane = new GridPane();
         gridPane.add(Usernamelabel, 0, 0);
-        gridPane.add(textforname, 1, 0);
        gridPane.setBackground(new Background(new BackgroundImage(new Image("/sample/battleship.jpg", 500, 500, false, true), BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)));
-       // gridPane.add(sp,0,1);
         BorderPane borderPane = new BorderPane();
        borderPane.setCenter(gridPane);
         borderPane.setBottom(ta);
@@ -105,16 +102,13 @@ public class BattleShipServer2 extends Application  {
                 // Continuously serve the client
                 while (true) {
                     // Receive score from the client
-
                     int score = inputFromClient.readInt();
                     ta.appendText(String.valueOf(score));
-                    String name=textforname.getText();
-                    System.out.println(name);
+                    String name=inputFromClient.readUTF();
                     // save name and score
                     info=name+","+score;
                     saveincsv(info);
-                    outputToClient.writeUTF(name);
-                    // Send name back to the client
+
 
                 }
             }
