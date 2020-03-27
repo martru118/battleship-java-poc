@@ -1,8 +1,11 @@
 # CSCI_2020U_Final_Project
 
+## How to use
+
 ## Contributions
-* Gameplay: Cheyenne, YongJoon, Michael
-* Build Tools (Gradle): YongJoon
-* File I/O: Martin, Annanya
-* Multi-threading: YongJoon
-* Debugging and UI: Everyone
+* __Gameplay:__ Cheyenne, YongJoon, Michael
+* __Build Tools (Gradle)__: YongJoon
+* __File I/O__: Martin, Annanya
+* __Multi-threading__: YongJoon
+* __Debugging and UI__: Everyone
+* __README__: Martin
