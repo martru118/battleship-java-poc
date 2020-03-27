@@ -82,9 +82,11 @@ public class BattleShipClient2 extends Application {
         Button sendScore = new Button("SEND SCORE");
 
         //coordinates text
+
+        //bottom horizontal text
+
         String strRowCor1 = "    0       ";
         for(int i = 1; i<10; i++) {
-            int buf = 10 - i;
             if(i < 5 ) {
                 strRowCor1 = strRowCor1  + "       " + i + "       ";
             } else if(i >= 5) {
@@ -96,7 +98,6 @@ public class BattleShipClient2 extends Application {
 
         String strRowCor2 = "    0       ";
         for(int i = 1; i<10; i++) {
-            int buf = 10 - i;
             if(i < 5 ) {
                 strRowCor2 = strRowCor2  + "       " + i + "       ";
             } else if(i >= 5) {
@@ -105,6 +106,14 @@ public class BattleShipClient2 extends Application {
         }
         Text bottomRowCor2 = new Text(strRowCor2);
         bottomRowCor2.setStyle("-fx-font-weight: bold");
+
+//        //middle vertical text
+//        for(int i = 0; i < 10; i++) {
+//            Text midVer = new Text(String.valueOf(i));
+//            int verticalDown = i*50;
+//            midVer.setStyle("-fx-font-weight: bold");
+//            pane.add(midVer,10,verticalDown);
+//        }
 
 
         // tf.setPromptText("Enter Name");
@@ -144,13 +153,13 @@ public class BattleShipClient2 extends Application {
             gcP.strokeLine(0, i, 500, i);
 
             //gcP.strokeText(String.valueOf(i / 50), i, 15);
-            gcP.strokeText(String.valueOf(i / 50 - 1), 3, i);
+            //gcP.strokeText(String.valueOf(i / 50 - 1), 3, i);
 
             gcO.strokeLine(i, 0, i, 500);
             gcO.strokeLine(0, i, 500, i);
 
             //gcO.strokeText(String.valueOf(i / 50), i, 15);
-            gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);
+            gcO.strokeText(String.valueOf(i / 50 - 1), -1, i);
         }
 
 
