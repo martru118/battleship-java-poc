@@ -167,7 +167,7 @@ public class BattleShipClient2 extends Application {
             }
         });
 
-
+        //starting the game
         startGame.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 
             @Override
@@ -183,7 +183,10 @@ public class BattleShipClient2 extends Application {
                     Media soundwater = new Media(new File(water).toURI().toString());
                     MediaPlayer mediawater = new MediaPlayer(soundwater);
                     TextInputDialog tid = new TextInputDialog("");
-                    tid.setHeaderText("Enter the Column Number and then the Row number (eg. 74)");
+                    tid.setHeight(20);
+                    tid.setX(150);
+                    tid.setY(500);
+                    tid.setHeaderText("Enter: Column Number then Row number (eg. 74)");
 
                     final Button cancel = (Button) tid.getDialogPane().lookupButton(ButtonType.CANCEL);
                     cancel.addEventFilter(ActionEvent.ACTION, event ->
