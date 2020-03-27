@@ -1,6 +1,9 @@
 # CSCI_2020U_Final_Project
 
 ## How to use
+1. Download/Clone the repository from Github
+2. Open the file in IntelliJ
+3.
 
 ## Contributions
 * __Gameplay:__ Cheyenne, YongJoon, Michael
