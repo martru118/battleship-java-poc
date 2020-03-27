@@ -63,7 +63,7 @@ public class BattleShipServer2 extends Application {
         new Thread(() -> {
             try {
                 // Create a server socket
-                ServerSocket serverSocket = new ServerSocket(1490);
+                ServerSocket serverSocket = new ServerSocket(8000);
                 ta.appendText("MultiThreadServer started at "
                         + new Date() + '\n');
                 while (true) {
