@@ -345,9 +345,6 @@ public class BattleShipClient2 extends Application {
             Image imageship = new Image("images/ship.PNG");
             if (board == playerBoard.getBoard()) {
                 gcP.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
-            } else {
-                //REMOVE LATER
-                gcO.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
             }
         }
     }
