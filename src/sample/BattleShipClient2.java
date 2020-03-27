@@ -104,11 +104,7 @@ public class BattleShipClient2 extends Application {
         }
         Text bottomRowCor2 = new Text(strRowCor2);
         bottomRowCor2.setStyle("-fx-font-weight: bold");
-
-
-        // tf.setPromptText("Enter Name");
-        // tf.setMaxWidth(500);
-        //ta.setEditable(false);
+        
         tf.setAlignment(Pos.CENTER_LEFT);
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
@@ -188,22 +184,9 @@ public class BattleShipClient2 extends Application {
                     cancel.addEventFilter(ActionEvent.ACTION, event ->
                             tid.showAndWait()
                     );
-                    //mediawater.play();
-                    //userinput=tf.getText();
-                    //coordinate[0] = Character.getNumericValue(userinput.charAt(0));
-                    //coordinate[1] = Character.getNumericValue(userinput.charAt(1));
-                    //coordinate = convertToInt(tf.getText());
-                    // inputlength=userinput.length();
+
                     //player turn
                     if (getPlayerturn()) {
-
-                /*
-                tid.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("\\d{0,1}([\\,]\\d{0,1})?"))
-                        tid.getEditor().setText(oldValue);
-                });
-
-                 */
                         while (!isValidMove(coordinate,disclosedboardopponent.getBoard()) || inputlength != 2) {
                             Optional<String> c = tid.showAndWait();
 
@@ -248,18 +231,13 @@ public class BattleShipClient2 extends Application {
                         }
                         if (playerBoard.isHit(coordinate2)) {
 
-                            //gcP.setFill(Color.RED);
-                            //playerscore = playerscore - 25;
-                            // opponentscore = opponentscore + 25;
                             hitboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
                             gcP.drawImage(imagefire, coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
-                            //mediafire.play();
                             ta.appendText("You have been HIT! \n ");
 
                         } else {
                             ta.appendText("Opponent has missed. \n" );
                             gcP.setFill(Color.BLACK);
-                            //mediawater.play();
                             gcP.drawImage(imagewater, coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
                             missboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
 
@@ -346,8 +324,6 @@ public class BattleShipClient2 extends Application {
             board[coords[0]][coords[1]] = true;
             Image imageship = new Image("/sample/ship.PNG");
             if (board == playerBoard.getBoard()) {
-                //gcP.setFill(Color.AQUA);
-                //gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
                 gcP.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
             } else {
                 //REMOVE LATER
@@ -514,7 +490,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     playerBoard.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("jbj");
+                    e.printStackTrace();
                 }
             }
             Image imageship = new Image("/sample/ship.PNG");
@@ -537,7 +513,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     opponentBoard.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("jbj");
+                    e.printStackTrace();
                 }
             }
             //loading the hit board for player
@@ -550,7 +526,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     hitboardPlayer.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("jbj");
+                    e.printStackTrace();
                 }
             }
             Image imagefire = new Image("/sample/fire.PNG");
@@ -572,7 +548,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     hitboardopponent.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("jbj");
+                    e.printStackTrace();
                 }
             }
 
@@ -594,7 +570,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     missboardPlayer.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("jbj");
+                    e.printStackTrace();
                 }
             }
             Image imagewater = new Image("/sample/water.jpg");
@@ -616,7 +592,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     missboardopponent.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    System.out.println("jbj");
+                    e.printStackTrace();
                 }
             }
 
@@ -642,17 +618,5 @@ public class BattleShipClient2 extends Application {
     }
 
 
-    public void cleanBoard(boolean[][] board, GraphicsContext gc) {
-        for (int i = 0; i < 10; i++) {
-            for (int k = 0; k < 10; k++) {
-                gc.setFill(Color.WHITE);
-                gc.fillRect(i * 50 + 2, k * 50 + 2, 45, 45);
-            }
-        }
-        for (int i = 50; i <= 500; i += 50) {
-            gc.strokeText(String.valueOf(i / 50), i, 15);
-            gc.strokeText(String.valueOf(i / 50 - 1), 3, i);
-        }
-    }
 }
 
