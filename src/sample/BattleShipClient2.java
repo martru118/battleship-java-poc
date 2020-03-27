@@ -22,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import test.Clock;
+
 public class BattleShipClient2 extends Application {
     private TextArea ta = new TextArea();
     private TextField tf = new TextField();
@@ -125,6 +127,10 @@ public class BattleShipClient2 extends Application {
 
         pane.add(bottomRowCor1,0,1,1,1);
         pane.add(bottomRowCor2,1,1,1,1);
+
+        Clock clock = new Clock();
+        pane.add(clock.getClockPane(),0,6 );
+
 
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
