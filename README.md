@@ -3,7 +3,7 @@
 Yong-Joon Baek, Cheyenne Carrier, Annanya Saha, Martin Troung, Michael Loo
 Yong-Joon,CheyenneC-ontechu,anannyasaha,100708410-uoit,Michael-Loo-2000
 
-Contributions:
+## Contributions:
 Gamplay: Cheyenne, Yong-Joon, Michael
 File input and output: Annanya, Martin,Cheyenne
 Gradle: Yong-Joon
