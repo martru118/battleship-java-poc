@@ -74,6 +74,7 @@ public class BattleShipClient2 extends Application {
         //set stage
         TextArea ta = new TextArea();
         TextField tf = new TextField();
+        tf.setPromptText("Enter Name");
 
         Button startGame = new Button("START THE GAME");
         Button exitGame = new Button("EXIT AND SAVE THE GAME ");
@@ -106,17 +107,6 @@ public class BattleShipClient2 extends Application {
         Text bottomRowCor2 = new Text(strRowCor2);
         bottomRowCor2.setStyle("-fx-font-weight: bold");
 
-
-//        //middle vertical text
-//        for(int i = 0; i < 10; i++) {
-//            Text midVer = new Text(String.valueOf(i));
-//            int verticalDown = i*50;
-//            midVer.setStyle("-fx-font-weight: bold");
-//            pane.add(midVer,10,verticalDown);
-//        }
-
-
-        // tf.setPromptText("Enter Name");
         // tf.setMaxWidth(500);
         //ta.setEditable(false);
 
