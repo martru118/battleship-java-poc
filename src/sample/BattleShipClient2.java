@@ -105,7 +105,7 @@ public class BattleShipClient2 extends Application {
         }
         Text bottomRowCor2 = new Text(strRowCor2);
         bottomRowCor2.setStyle("-fx-font-weight: bold");
-<<<<<<< HEAD
+
 
 //        //middle vertical text
 //        for(int i = 0; i < 10; i++) {
@@ -119,18 +119,16 @@ public class BattleShipClient2 extends Application {
         // tf.setPromptText("Enter Name");
         // tf.setMaxWidth(500);
         //ta.setEditable(false);
-=======
-        
->>>>>>> aab7a8273d2e087677a9935b2d1c859a5e8144d4
+
         tf.setAlignment(Pos.CENTER_LEFT);
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
 
-        pane.add(tf, 0, 3, 2, 1);
+        pane.add(tf, 0, 4, 2, 1);
 
         pane.add(sendScore, 0, 3, 2, 1);
 
-        pane.add(ta, 0, 4, 2, 1);
+        pane.add(ta, 0, 5, 2, 1);
         pane.add(startGame, 0, 2, 2, 1);
         pane.add(resumegame, 1, 2, 2, 1);
         pane.add(exitGame, 1, 3, 2, 1);
