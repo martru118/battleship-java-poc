@@ -11,4 +11,4 @@
 * __File I/O__: Martin, Annanya
 * __Multi-threading__: YongJoon
 * __Debugging and UI__: Everyone
-* __README__: Martin
+* __README__: Martin, Michael
