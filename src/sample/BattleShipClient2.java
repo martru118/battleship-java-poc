@@ -13,6 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -24,7 +26,7 @@ import java.util.*;
 
 public class BattleShipClient2 extends Application {
     private TextArea ta = new TextArea();
-    private TextField tf = new TextField();
+
     private final String path = "scores.csv";
 
     //boards
@@ -43,8 +45,10 @@ public class BattleShipClient2 extends Application {
     int[] coordinate = {10, 10};
     //to make sure what input length is put by the user.
     int inputlength = 0;
-    public int numberofturns;
+
+    public int numberofturns=2;
     public int playerscore;
+    public String name;
 
     //game saving
     String filename = "current game.txt";
@@ -72,21 +76,17 @@ public class BattleShipClient2 extends Application {
     public void start(Stage stage) throws Exception {
 
         //set stage
-        TextArea ta = new TextArea();
-        TextField tf = new TextField();
-        tf.setPromptText("Enter Name");
-
+        //TextField tf = new TextField();
+        ta.setWrapText(true);
         Button startGame = new Button("START THE GAME");
         Button exitGame = new Button("EXIT AND SAVE THE GAME ");
         Button resumegame = new Button("RESUME THE PREVIOUS GAME");
         Button sendScore = new Button("SEND SCORE");
 
         //coordinates text
-
-        //bottom horizontal text
-
         String strRowCor1 = "    0       ";
         for(int i = 1; i<10; i++) {
+            int buf = 10 - i;
             if(i < 5 ) {
                 strRowCor1 = strRowCor1  + "       " + i + "       ";
             } else if(i >= 5) {
@@ -98,6 +98,7 @@ public class BattleShipClient2 extends Application {
 
         String strRowCor2 = "    0       ";
         for(int i = 1; i<10; i++) {
+            int buf = 10 - i;
             if(i < 5 ) {
                 strRowCor2 = strRowCor2  + "       " + i + "       ";
             } else if(i >= 5) {
@@ -107,18 +108,20 @@ public class BattleShipClient2 extends Application {
         Text bottomRowCor2 = new Text(strRowCor2);
         bottomRowCor2.setStyle("-fx-font-weight: bold");
 
-        // tf.setMaxWidth(500);
-        //ta.setEditable(false);
 
-        tf.setAlignment(Pos.CENTER_LEFT);
+        // tf.setPromptText("Enter Name");
+        // tf.setMaxWidth(500);
+        ta.setEditable(false);
+        ta.setFont(new Font("Verdana", 15));
+        //tf.setAlignment(Pos.CENTER_LEFT);
         pane.add(playerCanvas, 0, 0);
         pane.add(opponentCanvas, 1, 0);
 
-        pane.add(tf, 0, 4, 2, 1);
+        //pane.add(tf, 1, 3, 1, 1);
 
         pane.add(sendScore, 0, 3, 2, 1);
 
-        pane.add(ta, 0, 5, 2, 1);
+        pane.add(ta, 0, 4, 2, 1);
         pane.add(startGame, 0, 2, 2, 1);
         pane.add(resumegame, 1, 2, 2, 1);
         pane.add(exitGame, 1, 3, 2, 1);
@@ -129,8 +132,6 @@ public class BattleShipClient2 extends Application {
         pane.setHgap(50);
         stage.setScene(new Scene(pane));
         stage.setTitle("BattleShip");
-        stage.setMaximized(true);
-        stage.setResizable(false);
         stage.show();
 
         //set boards
@@ -145,16 +146,16 @@ public class BattleShipClient2 extends Application {
             gcP.strokeLine(0, i, 500, i);
 
             //gcP.strokeText(String.valueOf(i / 50), i, 15);
-            //gcP.strokeText(String.valueOf(i / 50 - 1), 3, i);
+            gcP.strokeText(String.valueOf(i / 50 - 1), 3, i);
 
             gcO.strokeLine(i, 0, i, 500);
             gcO.strokeLine(0, i, 500, i);
 
             //gcO.strokeText(String.valueOf(i / 50), i, 15);
-            gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);;
+            gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);
         }
-
-
+        ta.appendText("Welcome to the battleship game.To Start the game click Start the Game.Then write down the number of columns and rows to attack different position.The board on left is your board where the SHips have been placed for you.If you want to save the game click exit and save.If you want to resume a previous game select Resume \n");
+        ta.appendText("You have to beat the opponent by least moves possible \n");
         //play game
         resumegame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -168,34 +169,38 @@ public class BattleShipClient2 extends Application {
             }
         });
 
-        //starting the game
+
         startGame.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 
             @Override
             public void handle(ActionEvent actionEvent) {
                 while (true) {
-                    Image imagewater = new Image("images\\water.jpg");
-                    Image imagefire = new Image("images\\fire.PNG");
-                    String fire = "src\\sample\\fire.mp3";
-                    String water = "src\\sample\\water.mp3";
+                    Image imagewater = new Image("/sample/water.jpg");
+                    Image imagefire = new Image("/sample/fire.PNG");
+                    String fire = "fire.mp3";
+                    String water = "water.mp3";
                     Media soundfire = new Media(new File(fire).toURI().toString());
                     MediaPlayer mediafire = new MediaPlayer(soundfire);
                     //mediafire.play();
                     Media soundwater = new Media(new File(water).toURI().toString());
                     MediaPlayer mediawater = new MediaPlayer(soundwater);
                     TextInputDialog tid = new TextInputDialog("");
-                    tid.setHeight(20);
-                    tid.setX(150);
-                    tid.setY(500);
-                    tid.setHeaderText("Enter: Column Number then Row number (eg. 74)");
+                    tid.setHeaderText("Enter the Column Number and then the Row number (eg. 74)");
 
                     final Button cancel = (Button) tid.getDialogPane().lookupButton(ButtonType.CANCEL);
                     cancel.addEventFilter(ActionEvent.ACTION, event ->
                             tid.showAndWait()
                     );
 
-                    //player turn
                     if (getPlayerturn()) {
+
+                /*
+                tid.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.matches("\\d{0,1}([\\,]\\d{0,1})?"))
+                        tid.getEditor().setText(oldValue);
+                });
+
+                 */
                         while (!isValidMove(coordinate,disclosedboardopponent.getBoard()) || inputlength != 2) {
                             Optional<String> c = tid.showAndWait();
 
@@ -225,11 +230,13 @@ public class BattleShipClient2 extends Application {
 
                         }
                         disclosedboardopponent.getBoard()[coordinate[0]][coordinate[1]] = true;
+                        //isValidMove()
                         // draw columns numbers again over to keep the visible
                         for (int i = 50; i <= 500; i += 50) {
                             //gcO.strokeText(String.valueOf(i / 50), i, 15);
                             gcO.strokeText(String.valueOf(i / 50 - 1), 3, i);
                         }
+                        ta.appendText(--numberofturns+" is your turn number \n");
                         changeTurn();
                     } else {
                         //computer turn
@@ -245,13 +252,18 @@ public class BattleShipClient2 extends Application {
                         }
                         if (playerBoard.isHit(coordinate2)) {
 
+                            //gcP.setFill(Color.RED);
+                            //playerscore = playerscore - 25;
+                            // opponentscore = opponentscore + 25;
                             hitboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
                             gcP.drawImage(imagefire, coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
+                            mediafire.play();
                             ta.appendText("You have been HIT! \n ");
 
                         } else {
                             ta.appendText("Opponent has missed. \n" );
                             gcP.setFill(Color.BLACK);
+                            mediawater.play();
                             gcP.drawImage(imagewater, coordinate2[0] * 50 + 2, coordinate2[1] * 50 + 2, 45, 45);
                             missboardPlayer.getBoard()[coordinate2[0]][coordinate2[1]] = true;
 
@@ -266,7 +278,8 @@ public class BattleShipClient2 extends Application {
                     //check who has lost
                     if (opponentBoard.hasLost()) {
                         ta.appendText("You have won! \n");
-                        ta.appendText("Enter username in textfield and click 'send score'\n");
+                        ta.appendText("Click 'send score'\n");
+                        ta.appendText("You will see if you have beaten Lowest Score '\n");
                         playerscore=numberofturns*50;
                         break;
                     } else if (playerBoard.hasLost()) {
@@ -293,22 +306,23 @@ public class BattleShipClient2 extends Application {
         });
         sendScore.setOnAction(e->{
             try{
+                List<String> records = new ArrayList<>();
+                //System.out.println(playerscore);//REMOVE
                 toServer.writeInt(playerscore);
                 toServer.flush();
-                String name=tf.getText();
-                toServer.writeUTF(name);
-                toServer.flush();
-
-                ta.appendText(name+": "+playerscore);
-                //String high scores = fromServer.readUTF();
-                //ta.appendText(highscores);
+                //String highscores=fromServer.readUTF();
+                String name=fromServer.readUTF();
+                ta.appendText(playerscore+"\n");
+                ta.appendText(name+"\n");
+                String highscore=fromServer.readUTF();
+                ta.appendText(highscore+" is the Lowest Score \n");
             }
             catch(IOException ex){
                 System.err.println(ex);
             }});
 
         try {
-            Socket socket = new Socket("localhost", 8000);
+            Socket socket = new Socket("localhost", 1490);
 
             //create an input stream to send data to the server
             fromServer = new DataInputStream(socket.getInputStream());
@@ -320,6 +334,8 @@ public class BattleShipClient2 extends Application {
             e.printStackTrace();
         }
     }
+    // user enters a coordinates to fire
+
 
     public boolean isValidMove(int[] coordinate, boolean[][] discloseboard) {
         if (coordinate[1] > 9 || coordinate[0] > 9) {
@@ -336,12 +352,11 @@ public class BattleShipClient2 extends Application {
     public void placeShips(boolean[][] board, int[][] coordinate) {
         for (int[] coords : coordinate) {
             board[coords[0]][coords[1]] = true;
-            Image imageship = new Image("images/ship.PNG");
+            Image imageship = new Image("/sample/ship.PNG");
             if (board == playerBoard.getBoard()) {
+                //gcP.setFill(Color.AQUA);
+                //gcP.fillRect(coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
                 gcP.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
-            } else {
-                //REMOVE LATER
-                gcO.drawImage(imageship, coords[0] * 50 + 2, coords[1] * 50 + 2, 45, 45);
             }
         }
     }
@@ -393,6 +408,31 @@ public class BattleShipClient2 extends Application {
         playerTurn = !playerTurn;
         numberofturns++;
     }
+
+    public List<String> getHighScores(String filePath) throws Exception {
+        List<String> records = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+
+            //read contents of file
+            while ((line = reader.readLine()) != null) {
+                String[] scoresonly=line.split(",");
+                records.add(scoresonly[1]);
+            }
+
+            //sort array
+            Collections.sort(records, new Comparator<String> () {
+                @Override
+                public int compare(String current, String other) {
+                    return Integer.valueOf(current).compareTo(Integer.valueOf(other));
+                }
+            });
+            return records;
+        }
+    }
+
+
 
     public void save() throws Exception {
         Writer writer = null;
@@ -467,7 +507,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     playerBoard.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    System.out.println("jbj");
                 }
             }
             Image imageship = new Image("/sample/ship.PNG");
@@ -490,7 +530,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     opponentBoard.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    System.out.println("jbj");
                 }
             }
             //loading the hit board for player
@@ -503,7 +543,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     hitboardPlayer.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    System.out.println("jbj");
                 }
             }
             Image imagefire = new Image("/sample/fire.PNG");
@@ -525,7 +565,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     hitboardopponent.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    System.out.println("");
                 }
             }
 
@@ -547,7 +587,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     missboardPlayer.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    System.out.println("");
                 }
             }
             Image imagewater = new Image("/sample/water.jpg");
@@ -569,7 +609,7 @@ public class BattleShipClient2 extends Application {
                 try {
                     missboardopponent.getBoard()[Integer.valueOf(entries[i])][Integer.valueOf(entries[++i])] = Boolean.valueOf(entries[++i]);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    System.out.println("");
                 }
             }
 
@@ -595,5 +635,16 @@ public class BattleShipClient2 extends Application {
     }
 
 
+    public void cleanBoard(boolean[][] board, GraphicsContext gc) {
+        for (int i = 0; i < 10; i++) {
+            for (int k = 0; k < 10; k++) {
+                gc.setFill(Color.WHITE);
+                gc.fillRect(i * 50 + 2, k * 50 + 2, 45, 45);
+            }
+        }
+        for (int i = 50; i <= 500; i += 50) {
+            gc.strokeText(String.valueOf(i / 50), i, 15);
+            gc.strokeText(String.valueOf(i / 50 - 1), 3, i);
+        }
+    }
 }
-
