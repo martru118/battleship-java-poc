@@ -3,6 +3,8 @@
 ## How to use
 
 ## Contributions
+Yong-Joon Baek, Cheyenne Carrier, Annanya Saha, Martin Troung, Michael Loo
+
 * __Gameplay:__ Cheyenne, YongJoon, Michael, Annanya
 * __Build Tools (Gradle)__: YongJoon
 * __File I/O__: Martin, Annanya, Cheyenne
